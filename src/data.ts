@@ -37,7 +37,7 @@ export const COMPANY_INFO = {
   representative: "Hồ Hải Khánh – Tổng Giám Đốc",
   socials: {
     facebook: "https://facebook.com/hoanggiakhang",
-    zalo: "https://zalo.me/0833756356",
+    zalo: "https://zalo.me/0966180802",
     youtube: "#"
   }
 };
