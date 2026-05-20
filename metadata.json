@@ -1,0 +1,6 @@
+{
+  "name": "Hoàng Gia Khang Industry",
+  "description": "Website doanh nghiệp chuyên nghiệp cung cấp vật tư công nghiệp, vòng bi, pallet và chế tạo máy.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
