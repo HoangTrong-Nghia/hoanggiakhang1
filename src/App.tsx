@@ -510,36 +510,25 @@ ${partnerMessage || 'N/A'}`;
                 transition={{ delay: idx * 0.1 }}
                 whileHover={{ y: -10 }}
                 onClick={() => {
-                  if (cat.id === 1) {
-                    setShowBearingCatalog(true);
+                  // Set active catalog and reset all other open catalogs to ensure only one is shown at a time
+                  setShowBearingCatalog(cat.id === 1);
+                  setShowFastenersCatalog(cat.id === 2);
+                  setShowToolsCatalog(cat.id === 3);
+                  setShowFluidPowerCatalog(cat.id === 4);
+                  setShowLubricantsCatalog(cat.id === 5);
+                  setShowPalletCatalog(cat.id === 6);
+
+                  const targetId = cat.id === 1 ? 'bearing-catalog' :
+                                   cat.id === 2 ? 'fasteners-catalog' :
+                                   cat.id === 3 ? 'tools-catalog' :
+                                   cat.id === 4 ? 'fluid-power-catalog' :
+                                   cat.id === 5 ? 'lubricants-catalog' :
+                                   cat.id === 6 ? 'pallet-catalog' : '';
+
+                  if (targetId) {
                     setTimeout(() => {
-                      document.getElementById('bearing-catalog')?.scrollIntoView({ behavior: 'smooth' });
-                    }, 100);
-                  } else if (cat.id === 2) {
-                    setShowFastenersCatalog(true);
-                    setTimeout(() => {
-                      document.getElementById('fasteners-catalog')?.scrollIntoView({ behavior: 'smooth' });
-                    }, 100);
-                  } else if (cat.id === 3) {
-                    setShowToolsCatalog(true);
-                    setTimeout(() => {
-                      document.getElementById('tools-catalog')?.scrollIntoView({ behavior: 'smooth' });
-                    }, 100);
-                  } else if (cat.id === 4) {
-                    setShowFluidPowerCatalog(true);
-                    setTimeout(() => {
-                      document.getElementById('fluid-power-catalog')?.scrollIntoView({ behavior: 'smooth' });
-                    }, 100);
-                  } else if (cat.id === 5) {
-                    setShowLubricantsCatalog(true);
-                    setTimeout(() => {
-                      document.getElementById('lubricants-catalog')?.scrollIntoView({ behavior: 'smooth' });
-                    }, 100);
-                  } else if (cat.id === 6) {
-                    setShowPalletCatalog(true);
-                    setTimeout(() => {
-                      document.getElementById('pallet-catalog')?.scrollIntoView({ behavior: 'smooth' });
-                    }, 100);
+                      document.getElementById(targetId)?.scrollIntoView({ behavior: 'smooth' });
+                    }, 150);
                   }
                 }}
                 className="group relative h-[420px] overflow-hidden rounded-sm bg-navy-dark hover-lift cursor-pointer"
