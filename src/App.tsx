@@ -509,7 +509,40 @@ ${partnerMessage || 'N/A'}`;
                 viewport={{ once: true }}
                 transition={{ delay: idx * 0.1 }}
                 whileHover={{ y: -10 }}
-                className="group relative h-[420px] overflow-hidden rounded-sm bg-navy-dark hover-lift"
+                onClick={() => {
+                  if (cat.id === 1) {
+                    setShowBearingCatalog(true);
+                    setTimeout(() => {
+                      document.getElementById('bearing-catalog')?.scrollIntoView({ behavior: 'smooth' });
+                    }, 100);
+                  } else if (cat.id === 2) {
+                    setShowFastenersCatalog(true);
+                    setTimeout(() => {
+                      document.getElementById('fasteners-catalog')?.scrollIntoView({ behavior: 'smooth' });
+                    }, 100);
+                  } else if (cat.id === 3) {
+                    setShowToolsCatalog(true);
+                    setTimeout(() => {
+                      document.getElementById('tools-catalog')?.scrollIntoView({ behavior: 'smooth' });
+                    }, 100);
+                  } else if (cat.id === 4) {
+                    setShowFluidPowerCatalog(true);
+                    setTimeout(() => {
+                      document.getElementById('fluid-power-catalog')?.scrollIntoView({ behavior: 'smooth' });
+                    }, 100);
+                  } else if (cat.id === 5) {
+                    setShowLubricantsCatalog(true);
+                    setTimeout(() => {
+                      document.getElementById('lubricants-catalog')?.scrollIntoView({ behavior: 'smooth' });
+                    }, 100);
+                  } else if (cat.id === 6) {
+                    setShowPalletCatalog(true);
+                    setTimeout(() => {
+                      document.getElementById('pallet-catalog')?.scrollIntoView({ behavior: 'smooth' });
+                    }, 100);
+                  }
+                }}
+                className="group relative h-[420px] overflow-hidden rounded-sm bg-navy-dark hover-lift cursor-pointer"
               >
                 <div className="absolute inset-0 z-10 bg-gradient-to-t from-navy-dark via-navy-dark/30 to-transparent opacity-90 group-hover:opacity-60 transition-opacity duration-500" />
                 <img 
@@ -524,51 +557,9 @@ ${partnerMessage || 'N/A'}`;
                   </div>
                   <h3 className="text-2xl font-display font-medium italic mb-2">{cat.title}</h3>
                   <p className="text-gold font-bold text-[11px] uppercase tracking-widest mb-6 opacity-0 group-hover:opacity-100 translate-y-4 group-hover:translate-y-0 transition-all duration-500">{cat.brand}</p>
-                  <motion.a 
-                    href={cat.id === 1 ? "#bearing-catalog" : cat.id === 2 ? "#fasteners-catalog" : cat.id === 3 ? "#tools-catalog" : cat.id === 4 ? "#fluid-power-catalog" : cat.id === 5 ? "#lubricants-catalog" : cat.id === 6 ? "#pallet-catalog" : "#products"} 
-                    onClick={(e) => {
-                      if (cat.id === 1) {
-                        e.preventDefault();
-                        setShowBearingCatalog(true);
-                        setTimeout(() => {
-                          document.getElementById('bearing-catalog')?.scrollIntoView({ behavior: 'smooth' });
-                        }, 100);
-                      } else if (cat.id === 2) {
-                        e.preventDefault();
-                        setShowFastenersCatalog(true);
-                        setTimeout(() => {
-                          document.getElementById('fasteners-catalog')?.scrollIntoView({ behavior: 'smooth' });
-                        }, 100);
-                      } else if (cat.id === 3) {
-                        e.preventDefault();
-                        setShowToolsCatalog(true);
-                        setTimeout(() => {
-                          document.getElementById('tools-catalog')?.scrollIntoView({ behavior: 'smooth' });
-                        }, 100);
-                      } else if (cat.id === 4) {
-                        e.preventDefault();
-                        setShowFluidPowerCatalog(true);
-                        setTimeout(() => {
-                          document.getElementById('fluid-power-catalog')?.scrollIntoView({ behavior: 'smooth' });
-                        }, 100);
-                      } else if (cat.id === 5) {
-                        e.preventDefault();
-                        setShowLubricantsCatalog(true);
-                        setTimeout(() => {
-                          document.getElementById('lubricants-catalog')?.scrollIntoView({ behavior: 'smooth' });
-                        }, 100);
-                      } else if (cat.id === 6) {
-                        e.preventDefault();
-                        setShowPalletCatalog(true);
-                        setTimeout(() => {
-                          document.getElementById('pallet-catalog')?.scrollIntoView({ behavior: 'smooth' });
-                        }, 100);
-                      }
-                    }}
-                    className="flex items-center gap-3 text-white font-bold uppercase text-[10px] tracking-[0.2em] group-hover:text-gold transition-colors cursor-pointer"
-                  >
+                  <div className="flex items-center gap-3 text-white font-bold uppercase text-[10px] tracking-[0.2em] group-hover:text-gold transition-colors">
                     Xem danh mục chi tiết <ArrowRight size={14} className="group-hover:translate-x-2 transition-transform" />
-                  </motion.a>
+                  </div>
                 </div>
               </motion.div>
             ))}
