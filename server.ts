@@ -11,9 +11,9 @@ let geminiClient: GoogleGenAI | null = null;
 
 function getGeminiClient(): GoogleGenAI {
   if (!geminiClient) {
-    const key = process.env.GEMINI_API_KEY;
+    const key = process.env.GEMINI_API_KEY1 || process.env.GEMINI_API_KEY;
     if (!key) {
-      throw new Error("GEMINI_API_KEY environment variable is required to power the AI Assistant.");
+      throw new Error("Không tìm thấy biến môi trường GEMINI_API_KEY hoặc GEMINI_API_KEY1 trong thiết lập của ứng dụng.");
     }
     geminiClient = new GoogleGenAI({
       apiKey: key,
