@@ -45,6 +45,7 @@ import { ToolsCatalogComponent } from './components/ToolsCatalog';
 import { FluidPowerCatalog } from './components/FluidPowerCatalog';
 import { LubricantsCatalog } from './components/LubricantsCatalog';
 import { PalletWarehouseCatalog } from './components/PalletWarehouseCatalog';
+import { AiChatBot } from './components/AiChatBot';
 
 // Helper to render basic markdown for blog content
 const renderBoldText = (text: string) => {
@@ -1577,6 +1578,7 @@ Nội dung yêu cầu chi tiết:
 
       {/* 13. FLOATING BUTTONS */}
       <FloatButtons />
+      <AiChatBot />
     </div>
   );
 }
