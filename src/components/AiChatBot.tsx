@@ -83,11 +83,16 @@ export const AiChatBot = () => {
         body: JSON.stringify({ messages: payloadMessages })
       });
 
-      if (!res.ok) {
-        throw new Error("Lỗi mạng sản sinh phản hồi từ máy chủ");
+      let data;
+      try {
+        data = await res.json();
+      } catch (jsonErr) {
+        throw new Error("Không thể phân tích dữ liệu phản hồi từ máy chủ.");
       }
 
-      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.details || data.error || "Yêu cầu đến máy chủ AI thất bại.");
+      }
       
       setMessages((prev) => [
         ...prev,
@@ -97,13 +102,14 @@ export const AiChatBot = () => {
           time: new Date().toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" })
         }
       ]);
-    } catch (err) {
+    } catch (err: any) {
       console.error("AI Chat Error:", err);
+      const errorMsg = err?.message || "Lỗi không xác định";
       setMessages((prev) => [
         ...prev,
         {
           role: "assistant",
-          content: `⚠️ Có lỗi kết nối xảy ra với máy chủ AI. \n\nHệ thống server-side đang chờ thiết lập **API Key**. Bạn có thể liên hệ trực tiếp cho tư vấn viên để được báo giá và hỗ trợ nhanh nhất qua:\n\n*   **Hotline hỗ trợ:** 0833 756 356\n*   **Zalo Chat:** [0966 180 802](https://zalo.me/0966180802)\n\nChúng tôi rất hân hạnh được giải đáp băn khoăn của bạn!`,
+          content: `⚠️ **Không thể kết nối đến máy chủ AI:** \n\n*Chi tiết lỗi:* \`\`\`${errorMsg}\`\`\` \n\nĐể được hỗ trợ nhanh nhất và nhận báo giá trực tiếp từ kỹ sư Hoàng Gia Khang, quý khách vui lòng liên hệ:\n\n*   **Hotline hỗ trợ:** 0833 756 356\n*   **Zalo Chat:** [0966 180 802](https://zalo.me/0966180802)\n\nChúng tôi sẵn sàng phục vụ và giải đáp mọi băn khoăn của quý khách!`,
           time: new Date().toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" })
         }
       ]);

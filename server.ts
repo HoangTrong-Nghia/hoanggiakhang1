@@ -94,9 +94,30 @@ async function startServer() {
         };
       });
 
+      // Gemini multi-turn conversations MUST start with a 'user' turn.
+      // We will slice the history to start from the first 'user' message.
+      const firstUserIndex = formattedContents.findIndex(c => c.role === "user");
+      const cleanContents = firstUserIndex !== -1 ? formattedContents.slice(firstUserIndex) : formattedContents;
+
+      // Ensure alternating roles if there are consecutive same roles
+      const finalContents: any[] = [];
+      for (const current of cleanContents) {
+        if (finalContents.length === 0) {
+          finalContents.push(current);
+        } else {
+          const previous = finalContents[finalContents.length - 1];
+          if (previous.role === current.role) {
+            // Merge consecutive messages of the same role into parts or skip
+            previous.parts[0].text += "\n" + current.parts[0].text;
+          } else {
+            finalContents.push(current);
+          }
+        }
+      }
+
       const response = await client.models.generateContent({
         model: "gemini-3.5-flash",
-        contents: formattedContents,
+        contents: finalContents,
         config: {
           systemInstruction: SYSTEM_INSTRUCTION,
           temperature: 0.7,
