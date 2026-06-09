@@ -65,54 +65,6 @@ export function PalletWarehouseCatalog() {
   });
   const [showInquirySuccess, setShowInquirySuccess] = useState(false);
 
-  // Calculator Widget State
-  const [calcArea, setCalcArea] = useState<number>(300);
-  const [calcLayers, setCalcLayers] = useState<number>(3);
-  const [calcEfficiency, setCalcEfficiency] = useState<number>(65); // % floor occupancy efficiency
-  const [calcResult, setCalcResult] = useState<{
-    palletCount: number;
-    footprintArea: number;
-    recommendedType: string;
-  } | null>(null);
-
-  // Function to calculate pallet estimate
-  const handleCalculate = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (calcArea <= 0 || calcLayers <= 0) {
-      alert('Vui lòng cung cấp diện tích mặt sàn thực tế và số tầng xếp chồng dương.');
-      return;
-    }
-
-    // Standard pallet covers roughly 1.2m * 1.0m = 1.2 m2 of footprint space.
-    // Floor usage efficiency multiplier
-    const effectiveArea = calcArea * (calcEfficiency / 100);
-    const standardPalletArea = 1.2;
-    const palletsPerFloor = Math.floor(effectiveArea / standardPalletArea);
-    const totalPalletsProposed = palletsPerFloor * calcLayers;
-
-    let recommendation = "Pallet Nhựa Mặt Phẳng (Nhiều hàng lót tốt, tải thăng bằng)";
-    if (calcLayers >= 4) {
-      recommendation = "Pallet Nhựa Siêu Tải gia cường Lõi Thép (Phù hợp xếp chồng tháp cao chấn)";
-    } else if (calcArea < 100) {
-      recommendation = "Pallet Gỗ hoặc Giấy Tổ Ong (Nhẹ tiện cơ động cho nhà kho hẹp)";
-    }
-
-    setCalcResult({
-      palletCount: totalPalletsProposed,
-      footprintArea: Number((palletsPerFloor * standardPalletArea).toFixed(1)),
-      recommendedType: recommendation
-    });
-  };
-
-  const handleQuickSelectTable = (groupName: string, tabId: number) => {
-    setSelectedGroup(groupName);
-    setActiveTab(tabId);
-    const el = document.getElementById('pallet-grid-anchor');
-    if (el) {
-      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-  };
-
   const resetAllFilters = () => {
     setSearchTerm('');
     setSelectedGroup('Tất cả');
@@ -164,12 +116,13 @@ export function PalletWarehouseCatalog() {
         const sizesArr = Array.isArray(item.size) ? item.size : item.size ? [item.size] : [];
         const matchesSize = sizesArr.some(sz => {
           const s = sz.toLowerCase();
+          if (selectedSize === "1400 x 1100 mm" && s.includes("1400 x 1100")) return true;
           if (selectedSize === "1200 x 1000 mm (Euro)" && s.includes("1200 x 1000")) return true;
           if (selectedSize === "1200 x 800 mm (Euro Small)" && s.includes("1200 x 800")) return true;
           if (selectedSize === "1100 x 1100 mm (Nhật)" && s.includes("1100 x 1100")) return true;
           if (selectedSize === "1200 x 1200 mm" && s.includes("1200 x 1200")) return true;
           if (selectedSize === "1000 x 1000 mm" && s.includes("1000 x 1000")) return true;
-          if (selectedSize === "Kích thước khác / theo yêu cầu" && !s.includes("1200 x 1000") && !s.includes("1100 x 1100") && !s.includes("1200 x 1200")) return true;
+          if (selectedSize === "Kích thước khác / theo yêu cầu" && !s.includes("1200 x 1000") && !s.includes("1100 x 1100") && !s.includes("1200 x 1200") && !s.includes("1400 x 1100")) return true;
           return false;
         });
         if (!matchesSize) return false;
@@ -264,19 +217,35 @@ export function PalletWarehouseCatalog() {
     }
 
     const subject = `Yêu cầu báo giá Pallet gỗ/nhựa: ${inquiryItem ? inquiryItem.name : 'Pallet công nghiệp'}`;
-    const body = `Họ tên khách hàng: ${inquiryForm.name}
-Số điện thoại: ${inquiryForm.phone}
-Thư điện tử: ${inquiryForm.email || 'N/A'}
-Công ty: ${inquiryForm.company || 'N/A'}
-Số lượng yêu cầu dải xuất: ${inquiryForm.quantity}
+    const body = `Chào Hoàng Gia Khang, tôi cần báo giá sản phẩm:
+- Sản phẩm: ${inquiryItem ? inquiryItem.name : 'Pallet công nghiệp'}
+- Họ tên: ${inquiryForm.name}
+- SĐT/Zalo: ${inquiryForm.phone}
+- Email: ${inquiryForm.email || 'N/A'}
+- Đơn vị: ${inquiryForm.company || 'N/A'}
+- Số lượng: ${inquiryForm.quantity}
+- Yêu cầu khác: ${inquiryForm.requirements || 'N/A'}`;
 
-Nội dung yêu cầu chi tiết:
-- Sản phẩm quan tâm: ${inquiryItem ? inquiryItem.name : 'Pallet công nghiệp'}
-- Đặc thù quy cách chi tiết: ${inquiryForm.requirements || 'N/A'}`;
-
-    window.location.href = `mailto:hoanggiakhangtrading@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(body);
+      } else {
+        const textArea = document.createElement("textarea");
+        textArea.value = body;
+        textArea.style.position = "fixed";
+        textArea.style.opacity = "0";
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+      }
+    } catch (err) {
+      console.error(err);
+    }
 
     setShowInquirySuccess(true);
+    window.open("https://zalo.me/0833756356", "_blank");
+
     setTimeout(() => {
       setShowInquirySuccess(false);
       setInquiryItem(null);
@@ -310,7 +279,7 @@ Nội dung yêu cầu chi tiết:
         </h2>
         <div className="h-0.5 w-24 bg-gold mx-auto mt-4 mb-4" />
         <p className="max-w-3xl mx-auto text-gray-400 text-sm md:text-base leading-relaxed">
-          Sản xuất khép kín và cung ứng các giải pháp lưu kho luân chuyển hàng hóa toàn diện: từ Pallet nhựa đúc mới/cũ tái sinh, Pallet gỗ tràm keo sấy xông trùng ISPM 15, Pallet thép dập lưới nâng tải nặng cho đến hệ thống Pallet giấy tổ ong siêu nhẹ xuất khẩu máy bay quốc tế.
+          Cung cấp các giải pháp pallet tối ưu chi phí và bám sát bản vẽ quy cách chuẩn: từ Pallet nhựa cũ 1400 x 1100 mm phom dầy dẻo dai siêu chịu tải lót sàn bãi, đến Pallet thùng gỗ liên kết đinh quẹo chống bung chuyên dụng tải chứa bánh mủ cao su xuất khẩu chất lượng cao tại Huế.
         </p>
       </div>
 
@@ -354,166 +323,7 @@ Nội dung yêu cầu chi tiết:
         </motion.div>
       </div>
 
-      {/* PALLET MATERIAL COMPARISON TABLE SECTION */}
-      <div className="container mx-auto px-4 md:px-12 mb-10">
-        <div className="bg-[#0D1F3C]/90 border border-white/10 rounded-lg p-6 backdrop-blur-sm">
-          <div className="flex items-center gap-2 mb-4 border-b border-white/10 pb-3">
-            <FileSpreadsheet className="w-5 h-5 text-gold" />
-            <h3 className="text-lg font-medium text-white tracking-wider uppercase font-display">
-              Bảng Đối Chiếu Ưu Nhược Điểm Các Chất Liệu Pallet Kho Bãi (Pallet Benchmark Matrix)
-            </h3>
-            <span className="ml-auto text-xs text-gold font-mono hidden md:inline">★ Trợ thủ đắc lực định vị ngân sách đầu tư kho</span>
-          </div>
 
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs text-gray-300">
-              <thead>
-                <tr className="border-b border-white/15 bg-[#0A1628]/70 text-gold font-bold uppercase tracking-wider">
-                  <th className="py-3 px-4">Tiêu Chí Khảo Sát</th>
-                  <th className="py-3 px-4 text-[#3182CE]">Pallet Nhựa (Plastic)</th>
-                  <th className="py-3 px-4 text-[#7B4F2E]">Pallet Gỗ (Wood)</th>
-                  <th className="py-3 px-4 text-[#718096]">Pallet Sắt/Thép (Steel)</th>
-                  <th className="py-3 px-3.5 text-[#D4A017]">Pallet Giấy (Paper)</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-white/5 font-medium">
-                {[
-                  { criterion: 'Tuổi thọ sử dụng', plastic: '🔑 Rất bền (10-15 năm)', wood: 'Xoay vòng (3-5 năm)', steel: '💎 Siêu bền (15-20 năm)', paper: 'Sử dụng 1 lần (Xuất ngoại)' },
-                  { criterion: 'Tải trọng gánh đỡ', plastic: 'Trung bình - Cao (1 - 1.5t)', wood: 'Trung bình (800 - 1200kg)', steel: '🔥 Cao nhất (2 - 5 tấn)', paper: 'Hàng nhẹ (≤ 500kg)' },
-                  { criterion: 'Kiểm dịch ISPM 15', plastic: '✅ Miễn trừ hoàn toàn', wood: '❌ Bắt buộc xông trùng/hấp HT', steel: '✅ Miễn trừ hoàn toàn', paper: '✅ Miễn trừ hoàn toàn' },
-                  { criterion: 'Hệ Kho lạnh đông', plastic: '🏆 Tốt nhất (Chống nứt dòn CO-PP)', wood: '⚠️ Kém (Đọng mốc ẩm thâm ván)', steel: 'Trung bình (Cần phủ kẽm nhúng)', paper: '❌ Rất kém (Mủn giấy rã mâm)' },
-                  { criterion: 'Giá thành đầu tư', plastic: 'Cao (Hoàn vốn nhanh)', wood: 'Thấp (Dễ sửa đắp mộng tay)', steel: 'Rất cao (Sửa chữa hàn dễ)', paper: 'Rất thấp (Tách khối nhẹ)' },
-                  { criterion: 'Thu hồi tái chế', plastic: '🔄 100% tái sinh (Hỗ trợ ESG)', wood: '✅ Làm củi đốt, dăm ép bóc', steel: '✅ Phế liệu nung lại luyện kim', paper: '🔄 100% rã tinh bột làm carton' }
-                ].map((row, idx) => (
-                  <tr key={idx} className="hover:bg-white/5 transition-colors duration-150">
-                    <td className="py-3.5 px-4 font-bold text-white border-r border-white/5 bg-[#0D1F3C]/50">{row.criterion}</td>
-                    <td 
-                      onClick={() => handleQuickSelectTable('Pallet nhựa mới', 1)}
-                      className="py-3.5 px-4 text-blue-300 hover:text-gold cursor-pointer italic font-semibold"
-                    >
-                      {row.plastic}
-                    </td>
-                    <td 
-                      onClick={() => handleQuickSelectTable('Pallet gỗ mới', 2)}
-                      className="py-3.5 px-4 text-[#C19A6B] hover:text-gold cursor-pointer italic"
-                    >
-                      {row.wood}
-                    </td>
-                    <td 
-                      onClick={() => handleQuickSelectTable('Pallet sắt / thép', 3)}
-                      className="py-3.5 px-4 text-gray-300 hover:text-gold cursor-pointer italic"
-                    >
-                      {row.steel}
-                    </td>
-                    <td 
-                      onClick={() => handleQuickSelectTable('Pallet giấy tổ ong', 4)}
-                      className="py-3.5 px-3.5 text-[#D4A017] hover:text-gold cursor-pointer italic"
-                    >
-                      {row.paper}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-
-      {/* SMART WIDGET: QUANTITY PALLET CALCULATOR */}
-      <div className="container mx-auto px-4 md:px-12 mb-10">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 bg-[#0E1B30] border border-gold/20 rounded-lg p-6">
-          <div className="lg:col-span-4 flex flex-col justify-between">
-            <div>
-              <div className="flex items-center gap-2 mb-2 text-gold font-bold text-xs uppercase tracking-widest">
-                <Calculator className="w-4 h-4 animate-bounce" />
-                Ứng Dụng Thuật Vật Tư
-              </div>
-              <h4 className="text-xl font-bold text-white font-display italic">BỘ TÍNH TOÁN SỐ LƯỢNG PALLET CẦN MUA TRONG KHO</h4>
-              <p className="text-xs text-gray-400 mt-2 leading-relaxed">
-                Nhập diện tích mặt sàn thực tế của nhà xưởng Quý khách cùng với kế hoạch xếp chồng tháp độ cao (số tầng). Thuật toán của chúng tôi sẽ ước tính sơ bộ lượng pallet cần xếp dựa trên thiết diện chuẩn 1200 x 1000 mm và hiệu suất chiếm tối ưu diện tích sàn xe nâng.
-              </p>
-            </div>
-            
-            <div className="mt-4 pt-4 border-t border-white/5 text-[11px] text-[#B8860B] font-semibold italic">
-              * Lưu ý: Kết quả trên dựa trên dầm phẳng xếp dở tiêu chuẩn. Liên hệ kỹ sư Hoàng Gia Khang vẽ layout CAD 3D kho để có số lượng chính xác nhất.
-            </div>
-          </div>
-
-          <div className="lg:col-span-8">
-            <form onSubmit={handleCalculate} className="grid grid-cols-1 sm:grid-cols-3 gap-4 items-end bg-[#0A1628] p-5 rounded border border-white/5">
-              <div>
-                <label className="text-[10px] text-gray-400 font-bold uppercase tracking-wider block mb-1.5">Diện Tích Nhà Kho Thiết Kế (m²)</label>
-                <input
-                  type="number"
-                  min="1"
-                  value={calcArea}
-                  onChange={(e) => setCalcArea(Math.max(1, parseInt(e.target.value) || 0))}
-                  className="w-full bg-[#0D1F3C] text-white border border-white/10 focus:border-gold rounded px-3 py-2 text-xs focus:outline-none font-bold"
-                />
-              </div>
-
-              <div>
-                <label className="text-[10px] text-gray-400 font-bold uppercase tracking-wider block mb-1.5">Chiều Cao Xếp Chồng (Số Tầng / Tấm)</label>
-                <input
-                  type="number"
-                  min="1"
-                  max="10"
-                  value={calcLayers}
-                  onChange={(e) => setCalcLayers(Math.max(1, parseInt(e.target.value) || 0))}
-                  className="w-full bg-[#0D1F3C] text-white border border-white/10 focus:border-gold rounded px-3 py-2 text-xs focus:outline-none font-bold"
-                />
-              </div>
-
-              <div>
-                <label className="text-[10px] text-gray-400 font-bold uppercase tracking-wider block mb-1.5">Hiệu Suất Diện Tích Thực Dùng (%)</label>
-                <select
-                  value={calcEfficiency}
-                  onChange={(e) => setCalcEfficiency(parseInt(e.target.value))}
-                  className="w-full bg-[#0D1F3C] text-white border border-white/10 focus:border-gold rounded px-3 py-2 text-xs focus:outline-none cursor-pointer"
-                >
-                  <option value={50}>50% (Kho nhiều lối đi thưa)</option>
-                  <option value={65}>65% (Tiêu chuẩn tối ưu vừa nâng vừa đi)</option>
-                  <option value={80}>80% (Hệ Drive-in Racking kịch khung)</option>
-                </select>
-              </div>
-
-              <div className="sm:col-span-3 mt-2">
-                <button
-                  type="submit"
-                  className="w-full py-2.5 bg-gold hover:bg-gold/90 text-[#0A1628] text-xs font-black uppercase tracking-widest rounded-sm transition-colors cursor-pointer flex items-center justify-center gap-2"
-                >
-                  <Gauge size={13} />
-                  Tính Toán Dự Toán Ngay
-                </button>
-              </div>
-            </form>
-
-            {/* Display Calculator Result */}
-            {calcResult && (
-              <motion.div 
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="mt-4 p-4 bg-gold/10 border border-gold/40 rounded flex flex-col sm:flex-row items-center justify-between gap-4"
-              >
-                <div>
-                  <div className="text-gray-400 text-[10px] font-bold uppercase tracking-wider">Ước tính vật tư sơ bộ kho:</div>
-                  <div className="text-white font-display text-lg md:text-xl font-black italic mt-1 leading-none">
-                    Cần mua khoảng: <span className="text-yellow-400 font-mono text-2xl">{calcResult.palletCount}</span> Cái Pallet
-                  </div>
-                  <div className="text-xs text-gray-300 mt-1">
-                    Diện tích sàn hữu dụng bị phủ: <span className="font-mono text-white font-semibold">{calcResult.footprintArea} m²</span> (Chừa lối đi)
-                  </div>
-                </div>
-
-                <div className="text-right sm:border-l border-white/10 sm:pl-4">
-                  <span className="text-gray-400 block text-[9px] font-bold uppercase tracking-widest">Loại khuyên dùng tối ưu:</span>
-                  <span className="text-gold font-bold text-xs sm:text-sm">{calcResult.recommendedType}</span>
-                </div>
-              </motion.div>
-            )}
-          </div>
-        </div>
-      </div>
 
       {/* SEARCH AND MULTI-FILTER DROPDOWNS BAR */}
       <div id="pallet-grid-anchor" className="container mx-auto px-4 md:px-12 mb-8">
@@ -525,8 +335,8 @@ Nội dung yêu cầu chi tiết:
                 <Box className="w-5 h-5 text-gold" />
               </div>
               <div>
-                <h3 className="text-lg font-bold text-white font-display uppercase tracking-wider">Lọc Tìm Kiếm Chéo Pallet Dày Bản</h3>
-                <p className="text-xs text-gray-400">Thiết lập đa chiều để hiển thị chính xác mác tải và kích thước</p>
+                <h3 className="text-lg font-bold text-white font-display uppercase tracking-wider">Tìm Kiếm Pallet & Vật Tư Kho Bãi</h3>
+                <p className="text-xs text-gray-400 font-medium">Nhập từ khóa để lọc nhanh tên gọi, kích thước, tải trọng hoặc đặc tính kỹ thuật</p>
               </div>
             </div>
 
@@ -539,101 +349,29 @@ Nội dung yêu cầu chi tiết:
             </button>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-            
-            {/* SEARCH INPUT */}
-            <div className="col-span-1 sm:col-span-2 md:col-span-2 flex flex-col justify-end">
-              <label className="text-[10px] text-gold font-bold uppercase tracking-widest mb-1.5 block">Nội dung từ khóa tìm</label>
+          <div className="w-full">
+            {/* SEARCH INPUT ONLY */}
+            <div className="flex flex-col">
+              <label className="text-[10px] text-gold font-bold uppercase tracking-widest mb-1.5 block">Nội dung từ khóa tìm kiếm</label>
               <div className="relative">
                 <input
                   type="text"
-                  placeholder="Nhập tên, chất liệu (Keo, HDPE, CT3...), chuẩn ISPM 15..."
+                  placeholder="Nhập tên pallet, chất liệu (Keo, Tràm, Nhựa HDPE...), kích thước (1400...), hoặc nhu cầu..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full bg-[#0A1628] text-white border border-white/10 focus:border-gold rounded px-4 py-2 text-xs focus:outline-none placeholder-gray-500 font-medium pl-9 transition-colors"
+                  className="w-full bg-[#0A1628] text-white border border-white/10 focus:border-gold rounded px-4 py-3 text-xs focus:outline-none placeholder-gray-500 font-medium pl-10 transition-colors"
                 />
-                <Search className="absolute left-3 top-2.5 text-gray-400 w-4 h-4" />
+                <Search className="absolute left-3.5 top-3 text-gray-400 w-4 h-4" />
                 {searchTerm && (
                   <button 
                     onClick={() => setSearchTerm('')} 
-                    className="absolute right-3 top-2.5 text-gray-400 hover:text-white"
+                    className="absolute right-3.5 top-3 text-gray-400 hover:text-white"
                   >
                     <X size={14} />
                   </button>
                 )}
               </div>
             </div>
-
-            {/* SIZE FILTER */}
-            <div>
-              <label className="text-[10px] text-gold font-bold uppercase tracking-widest mb-1.5 block">Kích Thước Khung</label>
-              <select
-                value={selectedSize}
-                onChange={(e) => setSelectedSize(e.target.value)}
-                className="w-full bg-[#0A1628] text-white border border-white/10 focus:border-gold rounded px-3 py-2 text-xs focus:outline-none font-medium cursor-pointer"
-              >
-                {PALLET_WAREHOUSE_DATA.filters.by_size.map((sz, idx) => (
-                  <option key={idx} value={sz}>{sz}</option>
-                ))}
-              </select>
-            </div>
-
-            {/* LOAD LIMIT FILTER */}
-            <div>
-              <label className="text-[10px] text-gold font-bold uppercase tracking-widest mb-1.5 block">Mức Tải Trọng Đỡ</label>
-              <select
-                value={selectedLoad}
-                onChange={(e) => setSelectedLoad(e.target.value)}
-                className="w-full bg-[#0A1628] text-white border border-white/10 focus:border-gold rounded px-3 py-2 text-xs focus:outline-none font-medium cursor-pointer"
-              >
-                {PALLET_WAREHOUSE_DATA.filters.by_load.map((ld, idx) => (
-                  <option key={idx} value={ld}>{ld}</option>
-                ))}
-              </select>
-            </div>
-
-            {/* CONDITION FILTER */}
-            <div>
-              <label className="text-[10px] text-gold font-bold uppercase tracking-widest mb-1.5 block">Tình Trạng Hàng</label>
-              <select
-                value={selectedCondition}
-                onChange={(e) => setSelectedCondition(e.target.value)}
-                className="w-full bg-[#0A1628] text-white border border-white/10 focus:border-gold rounded px-3 py-2 text-xs focus:outline-none font-medium cursor-pointer"
-              >
-                {PALLET_WAREHOUSE_DATA.filters.by_condition.map((cd, idx) => (
-                  <option key={idx} value={cd}>{cd}</option>
-                ))}
-              </select>
-            </div>
-
-            {/* SHOT GROUP ENTRY */}
-            <div>
-              <label className="text-[10px] text-gold font-bold uppercase tracking-widest mb-1.5 block">Nhân Bản Gốc/Hãng</label>
-              <select
-                value={selectedGroup}
-                onChange={(e) => setSelectedGroup(e.target.value)}
-                className="w-full bg-[#0A1628] text-white border border-white/10 focus:border-gold rounded px-3 py-2 text-xs focus:outline-none font-medium cursor-pointer"
-              >
-                {PALLET_WAREHOUSE_DATA.filters.by_group.map((grp, idx) => (
-                  <option key={idx} value={grp}>{grp}</option>
-                ))}
-              </select>
-            </div>
-
-            {/* ENTRY CHECKS */}
-            <div>
-              <label className="text-[10px] text-gold font-bold uppercase tracking-widest mb-1.5 block">Càng Luồn Nâng</label>
-              <select
-                value={selectedEntry}
-                onChange={(e) => setSelectedEntry(e.target.value)}
-                className="w-full bg-[#0A1628] text-white border border-white/10 focus:border-gold rounded px-3 py-2 text-xs focus:outline-none font-medium cursor-pointer"
-              >
-                {PALLET_WAREHOUSE_DATA.filters.by_entry.map((ent, idx) => (
-                  <option key={idx} value={ent}>{ent}</option>
-                ))}
-              </select>
-            </div>
-
           </div>
 
           {/* Counts Info bar */}
@@ -641,9 +379,9 @@ Nội dung yêu cầu chi tiết:
             <div>
               Tìm thấy: <span className="text-white font-bold">{filteredProducts.length}</span> / {PALLET_WAREHOUSE_DATA.products.length} chủng loại vật tư
             </div>
-            {searchTerm || selectedGroup !== 'Tất cả' || selectedSize !== 'Tất cả' || selectedLoad !== 'Tất cả' || selectedCondition !== 'Tất cả' || selectedEntry !== 'Tất cả' ? (
-              <div className="text-[#B8860B] bg-[#B8860B]/10 px-3 py-1 rounded border border-gold/30">
-                Lọc nén đa năng kích hoạt
+            {searchTerm ? (
+              <div className="text-[#B8860B] bg-[#B8860B]/10 px-3 py-1 rounded border border-gold/30 font-semibold text-[11px]">
+                Đang lọc theo từ khóa: "{searchTerm}"
               </div>
             ) : null}
           </div>
@@ -651,39 +389,7 @@ Nội dung yêu cầu chi tiết:
         </div>
       </div>
 
-      {/* 6 LOGISTICAL STRATEGIC TABS COMPILATION */}
-      <div className="container mx-auto px-4 md:px-12 mb-8">
-        <div className="flex flex-wrap justify-center items-center gap-2.5">
-          {[
-            { id: 6, name: 'TẤT CẢ VẬT TƯ', color: '#B8860B', icon: <Sparkles className="w-4 h-4" /> },
-            { id: 1, name: 'PALLET NHỰA (Plastic)', color: '#3182CE', icon: <Box className="w-4 h-4 text-[#3182CE]" /> },
-            { id: 2, name: 'PALLET GỖ (Wooden)', color: '#C19A6B', icon: <Layers className="w-4 h-4 text-[#C19A6B]" /> },
-            { id: 3, name: 'PALLET SẮT/THÉP (Iron)', color: '#718096', icon: <Settings className="w-4 h-4 text-[#718096]" /> },
-            { id: 4, name: 'PALLET GIẤY (Paper)', color: '#D4A017', icon: <Container className="w-4 h-4 text-[#D4A017]" /> },
-            { id: 5, name: 'PHỤ KIỆN & DỊCH VỤ', color: '#B8860B', icon: <Truck className="w-4 h-4" /> }
-          ].map((tab) => {
-            const isActive = activeTab === tab.id;
-            return (
-              <button
-                key={tab.id}
-                onClick={() => {
-                  setActiveTab(tab.id);
-                  const el = document.getElementById('pallet-grid-anchor');
-                  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }}
-                className={`px-4.5 py-3 text-xs font-bold uppercase tracking-wider flex items-center gap-2 rounded transition-all duration-300 transform leading-none cursor-pointer border ${
-                  isActive 
-                    ? `bg-[#0D1F3C] text-white shadow-lg scale-105 border-gold` 
-                    : 'bg-[#0D1F3C]/40 text-gray-400 hover:text-white border-white/5 hover:bg-[#0D1F3C]/70'
-                }`}
-              >
-                {tab.icon}
-                {tab.name}
-              </button>
-            );
-          })}
-        </div>
-      </div>
+
 
       {/* RENDER PRODUCTS GRID */}
       <div className="container mx-auto px-4 md:px-12 min-h-[400px]">
@@ -764,6 +470,18 @@ Nội dung yêu cầu chi tiết:
                     </button>
                   </div>
 
+                  {/* Product Image if present */}
+                  {prod.imageUrl && (
+                    <div className="relative h-48 w-full overflow-hidden bg-[#0A1628] flex items-center justify-center rounded-md mb-4 border border-white/5">
+                      <img 
+                        src={prod.imageUrl} 
+                        alt={prod.name}
+                        referrerPolicy="no-referrer"
+                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                      />
+                    </div>
+                  )}
+
                   {/* Product Body Information */}
                   <div className="mb-4">
                     
@@ -776,6 +494,22 @@ Nội dung yêu cầu chi tiết:
                     <h4 className="text-lg font-bold font-display italic text-white line-clamp-2 md:group-hover:text-gold transition-colors duration-200">
                       {prod.name}
                     </h4>
+
+                    {/* Highly visible gold price display card */}
+                    <div className="mt-3.5 mb-2.5 bg-[#0A1628]/95 border-2 border-[#C8963E] shadow-[0_0_15px_rgba(200,150,62,0.22)] rounded-lg p-3 flex flex-col justify-center items-center relative overflow-hidden group/price">
+                      <div className="absolute inset-0 bg-gradient-to-r from-gold/0 via-gold/5 to-gold/0 -translate-x-full group-hover/price:translate-x-full transition-transform duration-1000 ease-out" />
+                      
+                      <div className="text-[10px] uppercase font-black tracking-widest text-[#A67C33] mb-0.5">Giá sản phẩm</div>
+                      <div className="text-2xl font-black text-gold tracking-tight drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]">
+                        {prod.price || "Liên hệ báo giá"}
+                      </div>
+                      
+                      {prod.price_sub && (
+                        <div className="text-[10px] text-gray-400 mt-1 font-bold italic text-center leading-tight">
+                          {prod.price_sub}
+                        </div>
+                      )}
+                    </div>
 
                     {/* Dimensions / Sizes Displayed in Gold */}
                     {prod.size && (
@@ -801,8 +535,8 @@ Nội dung yêu cầu chi tiết:
                     {/* Divider line */}
                     <div className="h-[1px] bg-white/5 my-3" />
 
-                    {/* Static / Dynamic / Racking load index */}
-                    {(prod.static_load || prod.dynamic_load || prod.racking_load) && (
+                    {/* Static / Dynamic load index */}
+                    {(prod.static_load || prod.dynamic_load) && (
                       <div className="bg-[#0A1628] rounded-md p-3 border border-white/5 space-y-1.5 text-xs">
                         <div className="flex justify-between">
                           <span className="text-gray-400">Tải tĩnh lót sàn:</span>
@@ -816,12 +550,6 @@ Nội dung yêu cầu chi tiết:
                               : 'text-white'
                           }`}>{prod.dynamic_load || "Không khuyên nâng"}</span>
                         </div>
-                        {prod.racking_load && (
-                          <div className="flex justify-between">
-                            <span className="text-gray-400">Tải hãm dầm Rack (Kệ):</span>
-                            <span className="font-semibold text-cyan-400">{prod.racking_load}</span>
-                          </div>
-                        )}
                       </div>
                     )}
 
@@ -992,7 +720,33 @@ Nội dung yêu cầu chi tiết:
                 {detailItem.name}
               </h3>
 
+              {/* Premium Price Tag Display */}
+              <div className="bg-[#0A1628]/95 border-2 border-[#C8963E] shadow-[0_0_15px_rgba(200,150,62,0.22)] rounded-lg p-4 flex flex-col justify-center items-center mb-4">
+                <div className="text-[10px] uppercase font-black tracking-widest text-[#A67C33] mb-0.5">Mức Giá Ký Kết / Niêm Yết</div>
+                <div className="text-3xl font-black text-gold tracking-tight drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]">
+                  {detailItem.price || "Liên hệ báo giá sỉ"}
+                </div>
+                {detailItem.price_sub && (
+                  <div className="text-xs text-gray-400 mt-1.5 font-bold italic text-center">
+                    {detailItem.price_sub}
+                  </div>
+                )}
+              </div>
+
               <div className="h-[1px] bg-white/10 my-4" />
+
+              {/* Product Image Banner if present */}
+              {detailItem.imageUrl && (
+                <div className="relative h-64 w-full overflow-hidden bg-[#0A1628] flex items-center justify-center rounded-md mb-6 border border-white/5 shadow-inner">
+                  <img 
+                    src={detailItem.imageUrl} 
+                    alt={detailItem.name}
+                    referrerPolicy="no-referrer"
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-black/50 to-transparent pointer-events-none" />
+                </div>
+              )}
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                 
@@ -1018,12 +772,7 @@ Nội dung yêu cầu chi tiết:
                         <span className="text-white font-mono font-bold text-yellow-500">{detailItem.dynamic_load}</span>
                       </div>
                     )}
-                    {detailItem.racking_load && (
-                      <div className="flex justify-between border-b border-white/5 pb-1.5">
-                        <span className="text-gray-400">Tải lót dầm Rack (Kệ):</span>
-                        <span className="text-cyan-400 font-mono font-bold">{detailItem.racking_load}</span>
-                      </div>
-                    )}
+
                     {detailItem.weight && (
                       <div className="flex justify-between border-b border-white/5 pb-1.5">
                         <span className="text-gray-400">Trọng lượng bản thân:</span>
@@ -1185,8 +934,8 @@ Nội dung yêu cầu chi tiết:
                   className="bg-emerald-500/10 border border-emerald-500/40 p-6 rounded-md text-center py-10"
                 >
                   <Check className="w-12 h-12 text-emerald-400 mx-auto mb-4 animate-bounce" />
-                  <h4 className="text-lg font-bold text-white mb-1">Khởi Tạo RFP Thành Công!</h4>
-                  <p className="text-xs text-gray-400">Yêu cầu báo giá B2B đối với sản phẩm này đã được chuyển thẳng đến điều phối viên giao hàng Hoàng Gia Khang.</p>
+                  <h4 className="text-lg font-bold text-white mb-1">Đã Sao Chép & Chuyển Sang Zalo!</h4>
+                  <p className="text-xs text-amber-300 font-medium leading-relaxed">Thông tin yêu cầu đã được sao chép tự động. Quý khách vui lòng dán (Ctrl+V) vào khung chat Zalo của kỹ sư Hoàng Gia Khang để nhận báo giá sỉ ưu đãi nhanh nhất.</p>
                 </motion.div>
               ) : (
                 <form onSubmit={handleInquirySubmit} className="space-y-4">

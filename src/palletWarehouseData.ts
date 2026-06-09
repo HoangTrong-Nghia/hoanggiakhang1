@@ -1,3 +1,7 @@
+import usedPlasticPalletImage from './assets/images/used_plastic_pallet_1400x1100_1780976469621.png';
+import woodenBoxPalletImage from './assets/images/wooden_box_pallet_exact_1780985545097.png';
+import standardWoodenPalletImage from './assets/images/user_wooden_pallet_1780986786309.png';
+
 export interface PalletProduct {
   id: number;
   group:
@@ -11,13 +15,15 @@ export interface PalletProduct {
     | "Dịch vụ";
   name: string;
   condition: "Mới 100%" | "Cũ tái sử dụng" | "Tân trang" | "Mới" | "Cũ";
+  imageUrl?: string;
+  price?: string;
+  price_sub?: string;
   material?: string;
   size?: string | string[];
   base_size?: string;
   volume?: string;
   static_load?: string;
   dynamic_load?: string;
-  racking_load?: string;
   weight?: string;
   entry?: string;
   color?: string;
@@ -62,456 +68,155 @@ export const PALLET_WAREHOUSE_DATA: PalletCatalogData = {
   filters: {
     by_group: [
       "Tất cả",
-      "Pallet nhựa mới",
       "Pallet nhựa cũ",
       "Pallet gỗ mới",
-      "Pallet gỗ cũ",
-      "Pallet sắt / thép",
-      "Pallet giấy tổ ong",
-      "Phụ kiện pallet",
-      "Dịch vụ"
+      "Pallet gỗ cũ"
     ],
     by_size: [
       "Tất cả",
-      "1200 x 1000 mm (Euro)",
-      "1200 x 800 mm (Euro Small)",
-      "1100 x 1100 mm (Nhật)",
-      "1200 x 1200 mm",
-      "1000 x 1000 mm",
-      "Kích thước khác / theo yêu cầu"
+      "1400 x 1100 mm",
+      "1400 x 1120 mm",
+      "1200 x 1000 mm"
     ],
     by_load: [
       "Tất cả",
-      "Tải nhẹ (≤ 500 kg)",
-      "Tải trung (500 - 1000 kg)",
       "Tải nặng (1000 - 2000 kg)",
-      "Siêu tải (> 2000 kg)"
+      "Tải trung bình - nhẹ (500 - 1500 kg)"
     ],
     by_condition: [
       "Tất cả",
-      "Hàng mới 100%",
-      "Hàng cũ tái sử dụng",
-      "Hàng tân trang (Reconditioned)"
+      "Hàng cũ (90%)",
+      "Hàng mới 100%"
     ],
     by_entry: [
       "Tất cả",
-      "2 chiều (2-way)",
-      "4 chiều (4-way)"
+      "4 chiều (4-way)",
+      "2 chiều (2-way)"
     ]
   },
   products: [
-    // ================================
-    // PHẦN I: PALLET NHỰA MỚI
-    // ================================
-    {
-      id: 1,
-      group: "Pallet nhựa mới",
-      condition: "Mới 100%",
-      name: "Pallet nhựa mặt phẳng 9 chân (Solid Deck 9-Leg Pallet)",
-      material: "HDPE / PP nguyên sinh (Virgin)",
-      size: [
-        "1200 x 1000 x 150 mm",
-        "1100 x 1100 x 150 mm",
-        "1200 x 1200 x 150 mm"
-      ],
-      static_load: "5000 kg (tĩnh)",
-      dynamic_load: "1500 kg (xe nâng)",
-      racking_load: "800 kg (kệ một nhịp)",
-      weight: "12 - 18 kg",
-      entry: "4 chiều (4-way)",
-      color: "Xanh / Đen / Xám / Đỏ / Trắng (theo yêu cầu)",
-      features: [
-        "Mặt trên phẳng hoặc lưới chống trượt kết dính cao",
-        "Chịu hóa chất, không chịu thấm nước, kháng nấm mốc tuyệt vời",
-        "Có thể gắn chip RFID định vị tracking định kho tự động",
-        "Tái chế 100% khi hết vòng đời công tác"
-      ],
-      certifications: ["ISO 8611", "ISPM 15 miễn trừ (hoàn toàn không cần xử lý nhiệt)"],
-      applications: "Hệ kho lạnh đông, dệt may thực phẩm, hóa dược phẩm, đóng hàng xuất khẩu Mỹ/EU đại ngạch",
-      note: "⚠ ISPM 15: Pallet nhựa được đặc cách miễn trừ tất cả chứng nhận kiểm dịch - lợi thế vàng trong thông quan xuất khẩu",
-      packaging: "10 - 20 cái / pallet xếp chồng thu nhỏ",
-      status: "Còn hàng"
-    },
-    {
-      id: 2,
-      group: "Pallet nhựa mới",
-      condition: "Mới 100%",
-      name: "Pallet nhựa mặt lưới 9 chân (Grid Deck Pallet)",
-      material: "HDPE / PP nguyên sinh",
-      size: [
-        "1200 x 1000 x 150 mm",
-        "1100 x 1100 x 150 mm"
-      ],
-      static_load: "4000 kg",
-      dynamic_load: "1200 kg",
-      weight: "10 - 15 kg",
-      entry: "4 chiều (4-way)",
-      features: [
-        "Mặt lưới thông thoáng thoát hơi ẩm nhanh - cực kỳ thích hợp cho lưu kho lạnh",
-        "Tự trọng nhẹ hơn bản mặt phẳng 15-20% tối ưu lắp đặt",
-        "Tiết kiệm chi phí đầu tư và chi phí vận chuyển cước biển"
-      ],
-      applications: "Kho lạnh thủy hải sản đông đá, đóng giỏ rau củ quả xuất khẩu",
-      status: "Còn hàng"
-    },
-    {
-      id: 3,
-      group: "Pallet nhựa mới",
-      condition: "Mới 100%",
-      name: "Pallet nhựa có thành / có vách gấp tiện dụng (Box Pallet / Pallet Box)",
-      material: "HDPE nguyên sinh siêu bền dẻo",
-      size: "1200 x 1000 x 800 mm (tổng thể hộp)",
-      base_size: "1200 x 1000 mm",
-      volume: "800 - 1000 lít",
-      static_load: "2000 kg",
-      dynamic_load: "1000 kg",
-      weight: "35 - 50 kg",
-      entry: "4 chiều (4-way)",
-      features: [
-        "Vách gấp có thể xếp tháo lắp linh động 4 mặt giảm diện tích khi rỗng",
-        "Option nắp đậy bảo vệ chống chuột bám bụi bẩn",
-        "Khả năng chịu lực xếp chồng cao tầng tối giản thiết diện kho chứa",
-        "Chất liệu láng mịn dễ tẩy trùng chuyên dùng thực phẩm"
-      ],
-      applications: "Chứa linh kiện lắp ráp điện tử rời, nông sản thu hoạch xưởng chế biến, hóa chất hạt nilon",
-      status: "Còn hàng"
-    },
-    {
-      id: 4,
-      group: "Pallet nhựa mới",
-      condition: "Mới 100%",
-      name: "Pallet nhựa siêu tải gia cường lõi sắt (Heavy Duty Plastic Pallet)",
-      material: "HDPE gia cường lõi thép chịu lực (Reinforced / Steel Core)",
-      size: "1200 x 1000 x 170 mm",
-      static_load: "10.000 kg (siêu tĩnh)",
-      dynamic_load: "3000 kg (vận tải động)",
-      racking_load: "2000 kg (lên kệ rack beam tầng cao)",
-      weight: "25 - 35 kg",
-      entry: "4 chiều (4-way)",
-      features: [
-        "Hệ xương thép gia cứng cường độ chịu tải không vênh võng nứt gãy",
-        "Thách thức mọi dòng tải trọng siêu nặng trên hệ kệ kho cao tầng",
-        "Bố trí rãnh nhám cao su chống trượt tuyệt chỉnh"
-      ],
-      applications: "Kệ lôi kéo Drive-in, Push-back lưu trữ nguyên liệu phôi kim loại nặng, thiết bị siêu trọng",
-      note: "⚠ Luôn kiểm tra kỹ thông số Racking Load cho phép của dầm Rack trước khi tiến hành lên kệ",
-      status: "Còn hàng"
-    },
-    {
-      id: 5,
-      group: "Pallet nhựa mới",
-      condition: "Mới 100%",
-      name: "Pallet nhựa xuất khẩu tiêu chuẩn Euro (Euro Pallet Plastic Standard)",
-      material: "PP / HDPE tái sinh chọn lọc hoặc nguyên sinh",
-      size: "1200 x 800 x 144 mm (Tiêu chuẩn EUR1 quốc tế)",
-      static_load: "4000 kg",
-      dynamic_load: "1500 kg",
-      weight: "9 - 12 kg",
-      entry: "4 chiều (4-way)",
-      certifications: ["EPAL tiêu chuẩn kích thước Châu Âu", "ISPM 15 miễn kiểm"],
-      features: [
-        "Kích thước chính xác 100% chuẩn phân phối nội địa liên bang Châu Âu",
-        "Tương thích khớp răng xe nâng kéo pallet tay và gàu chuyền robot tự động",
-        "Mỏng nhẹ nhưng dẻo dai tối ưu dung lượng xe container"
-      ],
-      applications: "Bách hóa xuất khẩu sang các cảng Châu Âu, phân bố kho vận lưu bãi hàng không hàng hải tự động",
-      status: "Còn hàng"
-    },
-    // ================================
-    // PHẦN II: PALLET NHỰA CŨ
-    // ================================
     {
       id: 6,
       group: "Pallet nhựa cũ",
-      condition: "Cũ tái sử dụng",
-      name: "Pallet nhựa cũ loại A chọn lọc (Used Plastic Pallet Grade A/B/C)",
-      material: "HDPE / PP tái chế siêu mác bền",
-      size: [
-        "1200 x 1000 mm",
-        "1100 x 1100 mm"
-      ],
-      grading: {
-        "Hạng A (Grade A)": "Pallet mới > 90%, không nứt vỡ mặt, vệt chân mòn nhẹ, dẻo chịu lực đều, form căng.",
-        "Hạng B (Grade B)": "Xước sát biên dạng, các nút chống trượt vạt nhẹ, cam kết chân nguyên không sứt tải mác chuẩn dẻo.",
-        "Hạng C (Grade C)": "Đã súc rửa bảo hành lại mộng, thích hợp kê lót nền tĩnh xưởng nhỏ nội bộ giá cực mềm."
-      },
-      dynamic_load: "800 - 1200 kg (tương thích theo xếp loại)",
-      price_benefit: "Lợi ích kinh tế tột cùng, tiết kiệm ngay 40-60% ngân sách so với đầu tư dòng pallet nhựa mới",
+      condition: "Cũ",
+      name: "Pallet nhựa cũ 1400 x 1100 x 150 mm (Độ mới 90%)",
+      imageUrl: usedPlasticPalletImage,
+      price: "290.000 đ",
+      price_sub: "Bán lẻ tại kho Huế (Ưu đãi cực tốt)",
+      material: "Sợi nhựa HDPE đúc nguyên khối siêu chịu tải phom dầy dặn",
+      size: "1400 x 1100 x 150 mm",
+      static_load: "4000 kg (Tải tĩnh lót sàn)",
+      dynamic_load: "1500 kg (Tải động di chuyển nâng hạ)",
+      weight: "14.5 kg",
+      entry: "4 chiều (4-way) - Càng luồn linh hoạt xe nâng tay & xe nâng máy",
+      color: "Đen tuyền sạch ráo bãi",
       features: [
-        "Trải qua quy trình phân khoa và soi tải nghiêm ngặt trước khi xuất bãi",
-        "Sản phẩm được rửa sát khuẩn làm sạch vết dầu nhớt cơ khí",
-        "Độ dai dẻo dẻo của gốc HDPE chịu bão hòa mặn cực thọ"
+        "Độ mới cam kết trên 90%, vách nhựa và xương chịu lực dầy dặn dẻo dai, không nứt vỡ gầm gánh lực đều",
+        "Kích thước lớn hiếm có 1400 x 1100 x 150 mm vô cùng tối ưu cho việc xếp dỡ gá hộp, luân chuyển xếp tháp công nghiệp nặng",
+        "Độ dai tốt đặc trưng của nhựa chống chịu nấm mốc ẩm mặn kho lạnh, hóa chất phân bón xi măng tuyệt vời"
       ],
-      applications: "Kê lót khô bãi nội địa công ty, luân chuyển trung tâm lưu kho tạm phân xưởng chế tạo",
-      note: "⚠ Doanh nghiệp xuất ngoại sang nước khắt khe nên ưu tiên hàng mới để tránh các yêu cầu bãi dỡ từ thanh tra bến",
-      status: "Còn hàng - Số lượng lớn"
+      applications: "Chất xếp tủ bãi kho xưởng sản xuất, dệt nhuộm, giày da, may mặc dã chiến, bao bì phôi giấy và phục vụ dịch vụ vận tải logistics",
+      note: "💸 Cơ hội đầu tư cực tốt: Chỉ 290.000đ/cái bán tại kho Huế (Giá gốc tại bãi chưa bao gồm thuế VAT)",
+      status: "Còn hàng (Trong kho Huế - Sẵn bàn giao nhanh)"
     },
     {
-      id: 7,
-      group: "Pallet nhựa cũ",
-      condition: "Cũ tái sử dụng",
-      name: "Thu mua pallet nhựa cũ hỏng giá tốt (Pallet Buyback & Recycled Program)",
-      material: "HDPE / PP / ABS / PS hỏng vỡ nứt gãy",
-      buy_price: "Thu mua giá cao (Liên hệ định lượng theo kg hạt hoặc đếm cái thực tế)",
-      minimum_quantity: "Số lượng tối thiểu thu mua 50 cái / lượt",
-      features: [
-        "Có xe tải hốt tận kho của Quý khách nhanh gọn",
-        "Tiến hành quyết toán chuyển tiền tươi một phát ngay sau cân",
-        "Tái sinh vòng tuần hoàn xanh thân thiện bảo vệ sinh quyển doanh nghiệp",
-        "Hỗ trợ ghi nhận cung cấp thông tin xuất báo cáo kiểm định ESG (Bền vững môi trường) cho nhà máy lớn"
-      ],
-      applications: "Dịch vụ giải cứu bãi phế liệu, dọn tải kho rác pallet vỡ lấy thêm đồng thu nhập bù khấu hao",
-      note: "⚠ Đóng vai trò thu gom hạt nhựa không đốt thải khí độc hại bảo hộ môi sinh xanh đất nước",
-      status: "Đang thu mua - Liên hệ"
-    },
-    // ================================
-    // PHẦN III: PALLET GỖ MỚI
-    // ================================
-    {
-      id: 8,
+      id: 11,
       group: "Pallet gỗ mới",
       condition: "Mới 100%",
-      name: "Pallet gỗ xông trùng tiêu chuẩn xuất khẩu ISPM 15",
-      material: "Gỗ Keo rừng trồng Việt Nam / Gỗ Tràm già / Gỗ Thông nhập khẩu sấy khô",
-      size: [
-        "1200 x 1000 x 120 mm",
-        "1200 x 800 x 120 mm",
-        "1100 x 1100 x 120 mm"
-      ],
-      static_load: "2000 - 3000 kg (Tĩnh lực mộng chặt)",
-      dynamic_load: "1000 - 1500 kg",
-      weight: "15 - 25 kg",
-      entry: "2 chiều (2-way) hoặc 4 chiều bả gàu dầm gỗ",
-      certifications: [
-        "ISPM 15 Heat Treatment (HT) hấp khử xử nhiệt lõi ≥ 56°C trong ít nhất 30 phút",
-        "Đóng triện ký hiệu IPPC pháp lý chính thức toàn thế giới",
-        "Cấp giấy hồ sơ kiểm dịch chứng thư kiểm dịch thực vật (Phytosanitary Cert) xuất khẩu"
-      ],
-      construction: "Kết cấu 3 đà ngang định lực sấy căng + 9 ván mặt phẳng chịu đè + 5 ván lót bệ sàn đỡ lực nâng",
-      nail: "Dùng đinh cuộn xoắn mạ kẽm răng cưa (Ring Shank) chống bung giật ván mộng",
+      name: "Pallet gỗ 1200 x 1000 x 123 mm – 5 nan mặt – 9 chân – 2 hướng nâng",
+      imageUrl: standardWoodenPalletImage,
+      price: "109.000 đ",
+      price_sub: "Bán tại kho Huế (giá chưa bao gồm VAT)",
+      material: "Gỗ thông / gỗ keo / gỗ tràm theo yêu cầu (Độ ẩm gỗ: ≤ 20%)",
+      size: "1200 x 1000 x 123 mm",
+      static_load: "> 4.000 kg (Tải trọng tĩnh > 4 tấn)",
+      dynamic_load: "1.500 kg (Tải trọng động 1.5 tấn)",
+      weight: "8 – 10 kg (Gỗ thông) | 10 – 13 kg (Gỗ keo/tràm)",
+      entry: "2 hướng nâng (2-way entry)",
+      construction: "Pallet gỗ 2 hướng nâng liên kết cực kỳ vững chãi bằng đinh xoắn công nghiệp",
+      volume: "0,0176 m³/pallet",
       features: [
-        "Độ ngọt xơ gỗ nẹp cứng đạt chuẩn quy định hàng rào bảo vệ nấm mốc sâu hại",
-        "Đóng đai móng mạ lực ép dầm cứng củng cố",
-        "Chống ẩm đạt mác mốc độ ẩm gỗ luôn < 20% đo ráo đầu đọc"
+        "Quy cách gỗ sạch sấy đạt độ ẩm chuẩn dưới 20%. Toàn bộ sớ gỗ được tuyển lựa kỹ lưỡng, nói không với mối mọt và nứt toác.",
+        "Thiết kế 5 nan mặt pallet chịu tải lực thăng bằng tốt cùng 9 chân đỡ block liên kết liên kết đinh chắc chắn đảm bảo tuổi thọ cao.",
+        "Mặt pallet bào chà láng mịn lướt mượt mà tránh rách màng chất hàng nilon, đập so le quặp giữ liên kết cứng cáp tuyệt đối."
       ],
-      applications: "Đóng nẹp thùng xuất ngoại hàng thủ công mỹ nghệ, máy biến áp nặng, hàng nông thủy sản xuất đi Nhật, Mỹ, Úc...",
-      note: "⚠ Ký cam kết bảo đền bù gánh trách nhiệm nếu pallet gỗ không gõ dấu bị hải ngoại bãi trả",
-      status: "Còn hàng - Sản xuất theo đơn"
+      grading: {
+        "1. Kích thước tổng thể": "Dài: 1200 mm | Rộng: 1000 mm | Cao: 123 mm",
+        "2. Số thanh mặt ऊपर": "05 thanh mặt pallet (Kích thước: 1000 × 80 × 18 mm)",
+        "3. Thanh đà ngang trên": "03 thanh đà trên (Kích thước: 1200 × 60 × 15 mm)",
+        "4. Chân đỡ (Block)": "09 chân đỡ móng gỗ (Kích thước: 80 × 50 × 90 mm, chiều cao chân 90 mm)",
+        "5. Thanh đà đáy gầm": "03 thanh đà đáy gầm (Kích thước: 1200 × 60 × 18 mm)",
+        "6. Khoảng cách dọc (1200 mm)": "Bố trí mặt trên so le: 80 - 200 - 80 - 200 - 80 - 200 - 80 - 200 - 80 mm",
+        "7. Khoảng cách ngang (1000 mm)": "Khoảng hở đầu: 50 mm | Khoảng cách chân: 50 - 450 - 35 - 450 - 50 mm",
+        "8. Dự toán gỗ chi tiết": "5 thanh mặt (0,0072 m³) | 3 đà trên (0,00324 m³) | 3 đà đáy (0,00389 m³) | 9 chân đỡ (0,00324 m³)"
+      },
+      applications: "Chất xếp tủ bãi hàng hóa đóng pallet xuất khẩu, luân chuyển chuỗi cung ứng sản xuất dệt nhuộm, gỗ, xi măng, kho mủ cao su thủy sản tại Thừa Thiên Huế.",
+      note: "⚠ Quy cách đề xuất: Pallet gỗ 1200×1000×123 mm – 5 nan mặt – 9 chân – 2 hướng nâng.",
+      status: "Sản xuất theo đơn đặt hàng tại Huế (Đáp ứng kích thước bản vẽ yêu cầu)"
+    },
+    {
+      id: 12,
+      group: "Pallet gỗ cũ",
+      condition: "Cũ",
+      name: "Pallet gỗ cũ 1200 x 1000 x 123 mm – 5 nan mặt – 9 chân – 2 hướng nâng",
+      imageUrl: standardWoodenPalletImage,
+      price: "89.000 đ",
+      price_sub: "Bán tại kho Huế (giá chưa bao gồm VAT)",
+      material: "Gỗ sấy tự nhiên bền dai (Gỗ thông / gỗ keo / gỗ tràm, độ mới 85% - 90%)",
+      size: "1200 x 1000 x 123 mm",
+      static_load: "> 4.000 kg (Tải trọng tĩnh > 4 tấn)",
+      dynamic_load: "1.500 kg (Tải trọng động 1.5 tấn)",
+      weight: "8 – 10 kg (Gỗ thông) | 10 – 13 kg (Gỗ keo/tràm)",
+      entry: "2 hướng nâng (2-way entry)",
+      construction: "Pallet gỗ cũ 2 hướng nâng liên kết cực kỳ vững chắc bằng dòng đinh xoắn chịu lực cao",
+      volume: "0,0176 m³/pallet",
+      features: [
+        "Pallet gỗ cũ thanh lý tuyển chọn kỹ càng từ các lô hàng xuất khẩu nhẹ, cam kết độ mới chuẩn từ 85% - 90%, nan gỗ không nứt toác.",
+        "Thiết kế chuẩn 5 nan mặt thăng bằng tối ưu và 9 chân gù đỡ chịu lực đầm tay vững chãi, liên kết chắc chắn và chịu tải dã chiến cực đỉnh.",
+        "Phù hợp kinh tế cao cho kho phân bón, xi măng, gạch ngói, giấy cước luân chuyển nội địa hoặc hàng đóng xuất bãi cự ly ngắn tiết kiệm vốn đầu tư."
+      ],
+      grading: {
+        "1. Kích thước tổng thể": "Dài: 1200 mm | Rộng: 1000 mm | Cao: 123 mm",
+        "2. Số thanh mặt dọc": "05 thanh mặt pallet gỗ dày dặn (Kích thước: 1000 × 80 × 18 mm)",
+        "3. Thanh đà chịu tải": "03 thanh đà ngang liên kết (Kích thước: 1200 × 60 × 15 mm)",
+        "4. Châm gù chịu lực": "09 móng bệ gỗ đinh xoắn (Kích thước: 80 × 50 × 90 mm, chiều cao chân 90 mm)",
+        "5. Thanh đáy khóa gầm": "03 thanh đà bảo cố định đáy (Kích thước: 1200 × 60 × 18 mm)"
+      },
+      applications: "Lưu kho bảo quản hàng hóa bãi cảng, logistics dã chiến, luân chuyển chuỗi cung ứng sản xuất dệt nhuộm, gỗ, xi măng tại Thừa Thiên Huế và miền Trung.",
+      note: "⚠ Phân khúc cực kỳ kinh tế: Sản phẩm đã qua tuyển chọn kỹ lưỡng, phom dầy dặn dẻo dai gánh tải tĩnh vượt trội trên 4 tấn lót sàn.",
+      status: "Sẵn hàng số lượng lớn (Trong kho Huế - Giao ngay trong ngày)"
     },
     {
       id: 9,
       group: "Pallet gỗ mới",
       condition: "Mới 100%",
-      name: "Pallet gỗ lót nền nội địa (Gỗ keo giá xưởng đóng theo mét vuông)",
-      material: "Gỗ Keo đồi / Cây mộc tràm rừng tươi ráo vỏ sấy ẩm tự nhiên",
-      size: [
-        "1200 x 1000 mm",
-        "1100 x 1100 mm",
-        "1000 x 1000 mm",
-        "Tùy biến kích cỡ theo biên dạng đóng đơn riêng"
-      ],
-      static_load: "1500 - 2500 kg",
-      dynamic_load: "800 - 1200 kg",
-      weight: "12 - 20 kg",
-      entry: "2 chiều băm đà chịu siêu lực / 4 chiều xẻ mương luồn",
+      name: "Pallet thùng gỗ liên kết chuyên dụng chứa mủ cao su",
+      imageUrl: woodenBoxPalletImage,
+      price: "740.000 đ",
+      price_sub: "Giá sỉ đại lý - Chưa bao gồm thuế VAT (Tại kho Huế)",
+      material: "Gỗ sấy tự nhiên bền dai (Xoan keo, Tràm đồi sấy đạt độ ẩm tiêu chuẩn < 20%)",
+      size: "1400 x 1100 x 1120 mm (Kích thước phủ bì tổng thể)",
+      base_size: "1400 x 1000 mm (Kích thước đáy)",
+      height: "Chiều cao chân: 100 mm | Gù đỡ kê cao: 40 mm",
+      construction: "Kết cấu pallet dạng thùng hộp quây kín 4 phía bọc vách kết hợp nẹp dọc khung xương",
+      nail: "Dập đinh xoắn máy hoặc đinh ngạnh siết chặn mộng; nói không với đinh trơn hay đinh ngắn kém an toàn",
       features: [
-        "Đóng đinh tay dầm dày mộc mạc giá nội bộ rẻ cực tốt",
-        "Bỏ đi khâu xông hấp nhiệt đắt tiền nếu chỉ lưu bãi nội địa Việt Nam",
-        "Bảo lưu mộng rãnh đóng lót sàn gỗ thô vững bỉ"
+        "Thiết kế thùng chứa chuyên dụng: Sức chứa tối ưu, cực kỳ lý tưởng để đóng kẹp chứa bánh mủ cao su lót sàn hoặc xếp tháp.",
+        "Tiêu chuẩn phôi gỗ sạch: Khô tự nhiên ráo ẩm, hoàn toàn không mối mọt mục rỗng, cam kết không nứt gãy sớ gỗ sườn mâm tải.",
+        "Thi công đóng đinh tinh xảo: Đinh xuyên qua thớ gỗ nhô tối thiểu 8mm ở đầu mộng bên mạn đối diện, được bẻ đập quặp sát rạt >= 90 độ.",
+        "Độ phẳng & An toàn đỉnh cao: Mặt pallet được bào chà nhám láng mịn, nói không với dằm dăm sớ nhọn hay đầu đinh nhô lên gây găm rách bao màng bảo vệ."
       ],
-      applications: "Chèn bã xưởng xi măng sắt thép nội ô, luân chuyển bao bì bột mỳ nhà máy nguyên dược liệu nội thành",
-      status: "Còn hàng - Giao nhanh"
-    },
-    {
-      id: 10,
-      group: "Pallet gỗ mới",
-      condition: "Mới 100%",
-      name: "Pallet gỗ ép ván bóc LVL (Laminated Veneer Lumber Plywood Pallet)",
-      material: "Sự kết hợp gỗ lạng dán ép dăm hóa keo nhiệt dẻo lực ép cao LVL",
-      size: "1200 x 1000 x 120 mm",
-      static_load: "3000 kg",
-      dynamic_load: "1500 kg",
-      weight: "16 - 20 kg",
-      certifications: ["Đặc cách miễn trừ xử lý nhiệt ISPM 15 do gỗ đã qua phối nấu keo nhiệt hóa"],
-      features: [
-        "Không cong sứt góc nứt kẽ hay có ổ sâu đục tự nhiên như gỗ cây xẻ",
-        "Tính chuẩn ly đồng đều về kích mộng siêu chính xác mượt đẹp",
-        "Độ giãn nở phồng trướng nước nôi thấp hơn hẳn dăm mùn cưa thường"
-      ],
-      applications: "Logistics kho vận tự động băng guồng hẹp, đóng thùng phụ kiện tinh linh kiện viễn thông xuất khẩu",
-      status: "Còn hàng"
-    },
-    // ================================
-    // PHẦN IV: PALLET GỖ CŨ
-    // ================================
-    {
-      id: 11,
-      group: "Pallet gỗ cũ",
-      condition: "Cũ tái sử dụng",
-      name: "Pallet gỗ thông / Keo cũ loại A nâng cấp (Used Wood Pallet)",
-      size: "1200 x 1000 mm / 1100 x 1100 mm",
       grading: {
-        "Hạng A (Grade A)": "Ván nẹp khít nguyên bản không rỗng vỡ đà chính tải gánh sườn > 800kg mộc mạc không sâu.",
-        "Hạng B (Grade B)": "Tìm có chẻ ván nhỏ ở rìa đã đóng đè vá chắc nẹp đai tôn, tải gán lực đều gánh hàng kho nhẹ > 500kg.",
-        "Hạng C (Grade C)": "Nhiều dấu nứt gỗ xám đen, chỉ dùng lót kê nền xi măng trống ấm ẩm nấm mốc."
+        "1. Tấm ván mặt": "Ván gỗ tự nhiên xoan keo 1040 x 100 x 20 mm: 07 thanh (xếp đặt chuẩn bản vẽ)",
+        "2. Tấm ván đáy": "Ván gỗ tự nhiên dầy 1400 x 100 x 20 mm: 14 thanh chịu tải tỳ bệ",
+        "3. Tấm vách hông dài": "Ván gỗ 1120 x 100 x 20 (03 thanh) | 1277 x 100 x 20 (02 thanh) | 1320 x 100 x 20 (02 thanh) | 1502 x 100 x 20 (01 thanh)",
+        "4. Tấm vách hông ngắn": "Ván gỗ 1000 x 100 x 20 mm: 24 thanh vây | Ván gỗ 1080 x 100 x 20 mm: 04 thanh chịu lực khớp",
+        "5. Thanh gia cường mạn": "Thanh gỗ chéo dài 1500 mm: 02 thanh móng chéo giúp cố định hộp chống xô lệch nghiêng khi đè xếp chồng",
+        "6. Gù nâng bệ đáy": "Gù kê gỗ tự nhiên nguyên khối 100 x 100 x 40 mm: 09 cái phân bổ gánh tải trọng mâm"
       },
-      price_benefit: "Cực kỳ rẻ hời, giảm ngay gánh nặng tài chính 50-70% cho quỹ khởi nghiệp xưởng bến bãi",
-      minimum_quantity: "Số lượng tối thiểu giao 20 cái / lượt đơn hàng",
-      features: [
-        "Đội ngủ thợ mộc gom chọn lọc vặn vít dập đinh đực chặn chặt kẽ",
-        "Tháo bỏ thanh ván mục vỡ nát đắp chèn thanh chắc láng phẳng",
-        "Đáp ứng kho hàng tiêu dùng xoay chuyền lưu hành nội địa chi phí tiết giảm"
-      ],
-      applications: "Giao nhận thầu gạch ngói đất sét, lót bãi hàng hóa trong mùa bão dột ngập nước",
-      note: "⚠ Nghiêm cấm đặt dùng pallet gỗ thông cũ ẩm mốc lưu trữ thực phẩm lỏng uống trực tiếp hở miệng bao bì",
-      status: "Còn hàng - Số lượng lớn"
-    },
-    {
-      id: 12,
-      group: "Pallet gỗ cũ",
-      condition: "Tân trang",
-      name: "Pallet gỗ thông cũ tân trang ép chặt mập (Reconditioned Wood Pallet)",
-      description: "Hệ pallet gỗ thông chịu cước cảng tháo dỡ thô được nẹp bào láng lật ván lắp ráo mộng đinh mạ lực chắc",
-      size: "1200 x 1000 mm tiêu chuẩn",
-      dynamic_load: "800 - 1000 kg sau gia cố",
-      process: [
-        "1. Phay tháo rã rác bãi bốc mộng dão đinh rỉ mục",
-        "2. Thay đà Keo rắn gồng trục lực đỡ đáy",
-        "3. Chèn ván thông lột vỏ bào mài thô sơn lót chống nấm mốc mối băm",
-        "4. Đóng lại mộng gàu vít xoăn xi mạ ép nén căng",
-        "5. Thử đè cục bộ đạt tải mới cấp nhãn xuất bãi"
-      ],
-      price_benefit: "Bằng đúng 60% hóa đơn mua mới trong khi hiệu mác tải kéo ngang ngửa mộng mới",
-      applications: "Đóng kê linh kiện cho khối vận tải nội địa tuyến tải mộc mạc",
-      status: "Còn hàng"
-    },
-    // ================================
-    // PHẦN V: PALLET SẮT / THÉP
-    // ================================
-    {
-      id: 13,
-      group: "Pallet sắt / thép",
-      condition: "Mới 100%",
-      name: "Pallet sắt thép dập hộp lưới chấn sóng lực (Heavy Duty Steel Mesh Pallet)",
-      material: "Thép carbon cường tải CT3 / SS400 dập hình bản dày",
-      size: "1200 x 1000 x 140 mm phẳng chân sườn",
-      static_load: "3000 - 5000 kg lực ráo kẽ tĩnh",
-      dynamic_load: "2000 - 3000 kg xe vấu lôi kéo",
-      weight: "25 - 40 kg dầm thép dập rãnh",
-      entry: "4 chiều luồn càng nâng chấn an toàn",
-      features: [
-        "Độ thọ dải hạn vô tiền khoáng hậu từ 10 - 15 năm mác dầy",
-        "Hàn gá CO2 dập nguội chống va chấn móp rách ổ",
-        "Bảo vệ bằng công nghệ sơn tĩnh điện chất Epoxy dẻo hoặc mạ kẽm nhúng nóng toàn phần nhũ láng cuộn (HDG)",
-        "Tự xả hơi nước tản nhiệt tuyệt đối trong lò giữ bốc hơi"
-      ],
-      applications: "Xưởng đóng mạ phụ tùng xe cơ giới, giàn mỏ ga dầu lỏng rỉ ráo máy nặn dập xích đúc",
-      note: "⚠ Khối lượng pallet sắt khá lớn đòi hỏi chú ý rà mác giới hạn lực nâng động của xe nâng tay càng ngắn tránh chấn thương cột sống",
-      status: "Còn hàng - Sản xuất theo đơn"
-    },
-    {
-      id: 14,
-      group: "Pallet sắt / thép",
-      condition: "Mới 100%",
-      name: "Pallet lồng sắt / Thùng cũ có lưới thép tháo xếp (Steel Box Cage Pallet)",
-      material: "Hộp dập mạ SS400 / Inox cao cấp ANSI 304 chấn đúc rào chắn dính",
-      size: [
-        "1200 x 1000 x 800 mm",
-        "1200 x 1000 x 1200 mm cao móng"
-      ],
-      static_load: "3000 kg xếp chồng đè lớp",
-      volume: "800 - 1400 lít xếp bạt sườn",
-      weight: "60 - 120 kg tùy thuộc mác Inox sắt thép rào lồng",
-      features: [
-        "Thành rào khung lưới thép tháo gá bản lề hạ nghiêng thu gọn",
-        "Hỗ trợ khóa dính vấu xếp chồng 3-4 góc khoang tầng chồng tháp",
-        "Option bánh xe PU bọc bạc kẽm có phanh khóa chân bãi lôi kéo tiện lợi",
-        "Cánh cửa mở bản lề nghiêng 50% bốc xếp hốt nhanh vật tư"
-      ],
-      applications: "Chất trữ lốp cao su xe động, khối sắt vụn cơ khí thu dọn chính xác bóng rảnh phay tiện CNC",
-      status: "Liên hệ báo giá - Sản xuất theo yêu cầu"
-    },
-    // ================================
-    // PHẦN VI: PALLET GIẤY TỔ ONG
-    // ================================
-    {
-      id: 15,
-      group: "Pallet giấy tổ ong",
-      condition: "Mới 100%",
-      name: "Pallet giấy tổ ong mỏng nhẹ thân thiện (Eco Honeycomb Paper Pallet)",
-      material: "Lõi giấy gợn cấu trúc tổ ong tổ dập dính bằng keo sữa gốc thực vật + màng bìa phẳng dầy cứng cáp nén",
-      size: [
-        "1200 x 1000 x 120 mm",
-        "1200 x 800 x 100 mm"
-      ],
-      static_load: "2000 - 3000 kg tải tĩnh phẳng nén chặt",
-      dynamic_load: "500 - 800 kg chịu di tải vận hành tránh xóc giật lực kéo bên",
-      weight: "3 - 6 kg (Siêu nhẹ nhe như xốp tơi, tiết kiệm 70-80% khối lượng bì so với gỗ)",
-      certifications: [
-        "ISPM 15 Hoàn toàn miễn trừ tuyệt đối không lo dính thanh kiểm sinh khuẩn",
-        "Đạt chứng thư FSC quản bảo vệ và phát triển rừng xanh",
-        "Khả năng thiêu hủy nghiền bột xơ tái sinh tái chế 100%"
-      ],
-      features: [
-        "Lựa chọn hoàn bão giảm cước tải hàng không cargo dột đắt đỏ",
-        "Cốt phẳng phiu không gồ ghề trầy nứt mép sờn lót bảo hiểm vật dụng mỏng nắp",
-        "Cắt đứt mối lo kiểm dộng thực vật ở mọi bến cảng nội quốc ngoại"
-      ],
-      applications: "Đoạn dẹp đóng bọc hạt điện tử vi bo mạch cao cấp xuất cảng, mâm dăm dính ly thủy tinh hàng gốm sứ sang trọng",
-      note: "⚠ Kỵ nước ẩm, chống chỉ định bốc trữ hàng ngoài mái che khi trời rào sương dột làm nhão giấy",
-      status: "Còn hàng"
-    },
-    // ================================
-    // PHẦN VII: PHỤ KIỆN & DỊCH VỤ
-    // ================================
-    {
-      id: 16,
-      group: "Phụ kiện pallet",
-      name: "Hệ thống giá kệ kho chứa pallet (Selective / Drive-in Pallet Racking)",
-      material: "Hộp cột dầm dập dầy Omega thép CT3 sơn kỹ tĩnh điện ráo",
-      beam_load: "1000 - 5000 kg / Cặp dầm Beam nâng lực ngang gờ",
-      height: "Tầm cao 3m - 12m tùy biến kết cấu trần nền xưởng kho",
-      features: [
-        "Khảo sát đo vẽ và dựng bản vẽ 2D AutoCAD/3D SolidWorks dựng Layout phân tầng miễn phí",
-        "Tháo hạ dịch chuyển khoảng cách chốt đinh móc chữ U tầng móng dễ dàng",
-        "Hãm lực đâm va có hộp dập bảo vệ móng cột sắt móng đế chống lật (Column Guard)",
-        "Cam kết hệ số mác bền dẻo cao an toàn vận hành"
-      ],
-      applications: "Các hệ kho bãi sản xuất hàng lẻ pallet nặng bến dỡ, kho thủy nhiệt siêu cao thấp lạnh tủ sấy",
-      status: "Liên hệ tư vấn & báo giá"
-    },
-    {
-      id: 17,
-      group: "Phụ kiện pallet",
-      name: "Màng PE quấn căng co bọc bế đai kiện hàng (Stretch Film / PP PET Strapping)",
-      type: [
-        "Màng PE bóng dẻo co rút quấn quanh bệ mút tháp pallet 17-50 micron dẻo lực dai",
-        "Dây đai nhiệt bện nhựa PP bóng / dây PET xanh cường lực mác nẹp góc thép dập kẹp",
-        "Thanh ke nẹp giấy góc bọc cứng đầu nẹp vát lực chống rách bao"
-      ],
-      features: [
-        "Cốt PE nguyên hạt đùn nén 4 lớp chịu lực bong bật mớ rộng lực dãn cực dai hãm bẹp dầm tốt",
-        "Bảo vệ khối tháp hàng sấp pallet ngoài màng sương lạnh mưa bay dột dập ngấm rác",
-        "Dây đai mác chống trượt không rão lực cản"
-      ],
-      applications: "Đóng kiện thắt vây cứng chặt toàn bệ hàng dồn mâm pallet trước khi nâng bốc cẩu container xuất bến bãi",
-      status: "Còn hàng"
-    },
-    {
-      id: 18,
-      group: "Dịch vụ",
-      name: "Dịch vụ cho thuê Pallet luân chuyển kho xanh (Pallet Rental & Pooling Program)",
-      description: "Hỗ trợ cắt giảm toàn diện chi phí đầu tư vốn chết bằng dịch vụ cho thuê trọn gói pallet nhựa tiêu chuẩn, pallet gỗ HT theo chu kỳ ngày, tháng, năm",
-      minimum_rental: "Số lượng thuê tối thiểu túc trực 50 cái / lượt thuê",
-      deposit: "Hỗ trợ đặt cọc linh hoạt thỏa thầu ký nhận bàn giao",
-      features: [
-        "Chuyển vốn mua sắm tài sản (CAPEX) thành tiền chi phí thuê hoạt động (OPEX) gọn sổ sách báo thuế",
-        "Không tốn diện tích chứa kho rác pallet hỏng vỡ khi trái mùa vụ bận rộn",
-        "Nhận trao trả xử lý tận bến khi chấm dứt hợp đồng kho tải",
-        "Pallet giao luôn tuyển súc rửa phẳng mác đạt chuẩn an toàn vệ sinh"
-      ],
-      applications: "Hợp đồng thu đổi nông thủy sản theo mùa trăng xuất cảng, bến bãi logistics quá tải lưu trữ tạm thời",
-      status: "Liên hệ tư vấn - Hỗ trợ lập cấu hình kho thuê"
+      applications: "Đóng gói, xếp chồng, bảo quản và trung chuyển bánh mủ cao su thô công nghiệp bọc màng co PE, phục vụ bãi kho bến container tại Huế, vận tải liên bang.",
+      note: "⚠ Đóng đinh chuẩn: Mỗi mộng liên kết đóng so le cách rìa mép tối thiểu 15mm tránh nứt bục gỗ sấy, đảm bảo 2-3 đinh cho mỗi node giao thoa.",
+      status: "Sản xuất theo đơn đặt hàng tại Huế (Đáp ứng kích thước bản vẽ yêu cầu)"
     }
   ]
 };

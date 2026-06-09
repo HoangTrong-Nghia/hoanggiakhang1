@@ -243,19 +243,31 @@ export const FastenersCatalog: React.FC = () => {
     if (!clientName || !clientContact) return;
 
     const subject = `Yêu cầu báo giá vật tư cơ khí: ${productName}`;
-    const body = `Họ tên khách hàng: ${clientName}
-SĐT/Zalo liên hệ: ${clientContact}
+    const body = `Chào Hoàng Gia Khang, tôi cần báo giá sản phẩm:
+- Sản phẩm: ${productName}
+- Họ tên/Doanh nghiệp: ${clientName}
+- SĐT/Zalo liên hệ: ${clientContact}
+- Yêu cầu khác: ${clientMessage || 'N/A'}`;
 
-Nội dung yêu cầu chi tiết:
-- Sản phẩm quan tâm: ${productName}
-- Chi tiết khác: ${clientMessage || 'N/A'}`;
-
-    window.location.href = `mailto:hoanggiakhangtrading@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(body);
+      } else {
+        const textArea = document.createElement("textarea");
+        textArea.value = body;
+        textArea.style.position = "fixed";
+        textArea.style.opacity = "0";
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+      }
+    } catch (err) {
+      console.error(err);
+    }
 
     setInquirySuccess(true);
-    setTimeout(() => {
-      // Keep showing success briefly then close
-    }, 5000);
+    window.open("https://zalo.me/0833756356", "_blank");
   };
 
   return (
@@ -842,11 +854,11 @@ Nội dung yêu cầu chi tiết:
                       <motion.div 
                         initial={{ opacity: 0, scale: 0.95 }}
                         animate={{ opacity: 1, scale: 1 }}
-                        className="text-center py-5 bg-green-500/10 border border-green-500/30 rounded-sm"
+                        className="text-center py-5 bg-emerald-500/10 border border-emerald-500/30 rounded-sm"
                       >
-                        <CheckCircle className="text-green-400 mx-auto mb-2" size={32} />
-                        <p className="text-xs text-white font-bold uppercase tracking-wider">Quản trị viên đã nhận yêu cầu!</p>
-                        <p className="text-[11px] text-gray-400 mt-1 max-w-xs mx-auto">HGK sẽ liên lạc trực tiếp tư vấn thông số dung sai và tiến độ giao hàng.</p>
+                        <CheckCircle className="text-emerald-400 mx-auto mb-2" size={32} />
+                        <p className="text-xs text-white font-bold uppercase tracking-wider">Đã Sao Chép & Chuyển Zalo!</p>
+                        <p className="text-[11px] text-amber-300 mt-1 max-w-xs mx-auto font-medium leading-relaxed">Thông tin đã sao chép tự động. Quý khách vui lòng dán (Ctrl+V) vào Zalo kỹ sư Hoàng Gia Khang để nhận báo giá sỉ tiến độ cam kết.</p>
                       </motion.div>
                     ) : (
                       <form onSubmit={(e) => handleSubmitInquiry(e, detailProduct.name)} className="space-y-3">

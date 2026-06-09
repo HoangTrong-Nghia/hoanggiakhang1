@@ -37,7 +37,7 @@ export const COMPANY_INFO = {
   representative: "Hồ Hải Khánh – Tổng Giám Đốc",
   socials: {
     facebook: "https://facebook.com/hoanggiakhang",
-    zalo: "https://zalo.me/0966180802",
+    zalo: "https://zalo.me/0833756356",
     youtube: "#"
   }
 };
@@ -464,3 +464,35 @@ export const WHY_CHOOSE_US = [
 
 
 export const PARTNERS = ["NTN", "ZWZ", "SKF", "FAG", "NSK", "KOYO", "TIMKEN", "NACHI"];
+
+export const DELIVERED_CUSTOMERS = [
+  {
+    id: 1,
+    name: "Công ty Cao su Huy Anh Phong Điền",
+    location: "Khu công nghiệp Phong Điền, Thừa Thiên Huế",
+    items: "Cung cấp gối đỡ gánh tải lực, vòng bi ZWZ/NTN chịu tải gánh nặng và xích tải hệ thống chế biến cao su tự nhiên.",
+    status: "Bàn giao hoàn tất"
+  },
+  {
+    id: 2,
+    name: "Công ty Cổ phần Xi măng Luks (Việt Nam)",
+    location: "Thị xã Hương Trà, Thừa Thiên Huế",
+    items: "Cung ứng vòng bi công nghiệp cỡ lớn trục cán nghiền clinker và mỡ bôi trơn chịu nhiệt cực áp.",
+    status: "Bàn giao hoàn tất"
+  },
+  {
+    id: 3,
+    name: "Nhà máy Bia Carlsberg Việt Nam",
+    location: "Khu công nghiệp Phú Bài, Hương Thủy, Huế",
+    items: "Gia công đóng pallet gỗ keo sấy lò xuất khẩu chuẩn ISPM 15 và pallet nhựa lót sàn siêu dai.",
+    status: "Bàn giao hoàn tất"
+  },
+  {
+    id: 4,
+    name: "Dự án Nâng cấp Hệ thống Băng tải Dệt may Scavi",
+    location: "Khu công nghiệp Phong Điền, Thừa Thiên Huế",
+    items: "Khảo sát, thiết kế chế tạo rulo con lăn, lắp đặt cân chỉnh và bảo dưỡng định kỳ trọn gói băng chuyền tự chọn.",
+    status: "Bàn giao hoàn tất"
+  }
+];
+

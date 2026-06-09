@@ -322,17 +322,33 @@ export const FluidPowerCatalog: React.FC = () => {
     if (!inquiryName || !inquiryPhone) return;
 
     const subject = `Yêu cầu báo giá Khí nén - Thủy lực: ${activeInquiryProduct ? activeInquiryProduct.name : 'Vật tư tự động hóa'}`;
-    const body = `Họ tên khách hàng: ${inquiryName}
-Số điện thoại: ${inquiryPhone}
-Thư điện tử: ${inquiryEmail || 'N/A'}
+    const body = `Chào Hoàng Gia Khang, tôi cần báo giá sản phẩm khí nén/thủy lực:
+- Sản phẩm: ${activeInquiryProduct ? activeInquiryProduct.name : 'Vật tư tự động hóa'}
+- Họ tên: ${inquiryName}
+- SĐT/Zalo: ${inquiryPhone}
+- Email: ${inquiryEmail || 'N/A'}
+- Yêu cầu khác: ${inquiryMessage || 'N/A'}`;
 
-Nội dung yêu cầu chi tiết:
-- Thiết bị quan tâm: ${activeInquiryProduct ? activeInquiryProduct.name : 'Vật tư tự động hóa'}
-- Chi tiết khác: ${inquiryMessage || 'N/A'}`;
-
-    window.location.href = `mailto:hoanggiakhangtrading@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(body);
+      } else {
+        const textArea = document.createElement("textarea");
+        textArea.value = body;
+        textArea.style.position = "fixed";
+        textArea.style.opacity = "0";
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+      }
+    } catch (err) {
+      console.error(err);
+    }
 
     setInquirySuccess(true);
+    window.open("https://zalo.me/0833756356", "_blank");
+
     setTimeout(() => {
       setInquiryMessage('');
       setInquiryName('');
@@ -340,7 +356,7 @@ Nội dung yêu cầu chi tiết:
       setInquiryPhone('');
       setActiveInquiryProduct(null);
       setInquirySuccess(false);
-    }, 2500);
+    }, 4000);
   };
 
   return (
@@ -1247,9 +1263,9 @@ Nội dung yêu cầu chi tiết:
                   <div className="w-16 h-16 bg-emerald-500/20 text-emerald-400 rounded-full flex items-center justify-center mx-auto shadow-lg animate-bounce">
                     <Check size={32} />
                   </div>
-                  <h5 className="text-lg font-bold text-white uppercase tracking-wider">Gửi yêu cầu thành công!</h5>
-                  <p className="text-gray-300 text-xs leading-relaxed max-w-sm mx-auto">
-                    Hệ thống thông báo giá tự động đã tiếp nhận biểu mẫu của quý khách. Nhân viên kĩ thuật thương mại Hoàng Gia Khang sẽ liên hệ trực tiếp đến số điện thoại / email trong vòng <span className="text-gold font-bold">2 tiếng</span>.
+                  <h5 className="text-lg font-bold text-white uppercase tracking-wider">Đã Sao Chép & Chuyển Zalo!</h5>
+                  <p className="text-amber-300 text-xs leading-relaxed max-w-sm mx-auto font-medium">
+                    Thông tin yêu cầu đã được sao chép tự động. Quý khách vui lòng dán (Ctrl+V) vào khung chat Zalo của kỹ sư Hoàng Gia Khang để nhận báo giá sỉ thiết bị tự động hóa nhanh nhất.
                   </p>
                 </div>
               ) : (

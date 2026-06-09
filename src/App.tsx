@@ -25,7 +25,8 @@ import {
   Layers,
   CheckCircle,
   HelpCircle,
-  AlertCircle
+  AlertCircle,
+  ExternalLink
 } from 'lucide-react';
 import { 
   COMPANY_INFO, 
@@ -36,7 +37,8 @@ import {
   SERVICES, 
   WHY_CHOOSE_US, 
   BLOG_POSTS, 
-  PARTNERS 
+  PARTNERS,
+  DELIVERED_CUSTOMERS
 } from './data';
 import { Logo } from './components/Logo';
 import { BEARINGS_CATALOG, Product } from './productsData';
@@ -244,18 +246,34 @@ export default function App() {
     if (!partnerName || !partnerPhone) return;
 
     const subject = `Yêu cầu hợp tác & Tư vấn: ${partnerField}`;
-    const body = `Họ tên: ${partnerName}
-Số điện thoại: ${partnerPhone}
-Email: ${partnerEmail || 'N/A'}
-Quý doanh nghiệp: ${partnerCompany || 'N/A'}
-Lĩnh vực tư vấn: ${partnerField}
+    const body = `Chào Hoàng Gia Khang, tôi cần tư vấn hợp tác:
+- Lĩnh vực: ${partnerField}
+- Họ tên: ${partnerName}
+- Số điện thoại: ${partnerPhone}
+- Email: ${partnerEmail || 'N/A'}
+- Đơn vị: ${partnerCompany || 'N/A'}
+- Yêu cầu tư vấn: ${partnerMessage || 'N/A'}`;
 
-Chi tiết yêu cầu:
-${partnerMessage || 'N/A'}`;
-
-    window.location.href = `mailto:hoanggiakhangtrading@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(body);
+      } else {
+        const textArea = document.createElement("textarea");
+        textArea.value = body;
+        textArea.style.position = "fixed";
+        textArea.style.opacity = "0";
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+      }
+    } catch (err) {
+      console.error(err);
+    }
 
     setPartnerSuccess(true);
+    window.open("https://zalo.me/0833756356", "_blank");
+
     setTimeout(() => {
       setPartnerSuccess(false);
       setPartnerName('');
@@ -569,6 +587,16 @@ ${partnerMessage || 'N/A'}`;
               <p className="text-gray-500 max-w-2xl mx-auto mt-4 font-light text-sm md:text-base">
                 Tìm kiếm sản phẩm, lọc theo thương hiệu toàn cầu và gửi yêu cầu tư vấn báo giá trực tiếp phục vụ nhu cầu sản xuất công nghiệp.
               </p>
+              <div className="mt-6 flex flex-wrap justify-center gap-4">
+                <a 
+                  href="https://www.zwz-bearing.com/en/product/list_22.html" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2.5 px-5 py-3 bg-linear-to-r from-[#B8860B] to-gold text-white font-bold text-xs uppercase tracking-wider rounded-sm shadow-md hover:brightness-110 transition-all border border-[#B8860B]/20"
+                >
+                  <ExternalLink size={14} className="text-white" /> Tham khảo danh mục sản phẩm ZWZ chính hãng
+                </a>
+              </div>
               <div className="h-1 bg-[#B8860B] w-24 mx-auto mt-6" />
             </div>
 
@@ -600,7 +628,7 @@ ${partnerMessage || 'N/A'}`;
                 {/* Brand Selection Filters */}
                 <div className="flex flex-wrap gap-2 items-center justify-center w-full lg:w-auto">
                   <span className="text-[11px] font-bold text-[#B8860B] uppercase tracking-wider mr-2 hidden xl:inline">Thương hiệu:</span>
-                  {['Tất cả', 'SKF', 'NSK', 'FAG', 'NTN', 'Koyo', 'Timken', 'INA'].map((brand) => (
+                  {['Tất cả', 'SKF', 'NSK', 'FAG', 'NTN', 'ZWZ', 'Koyo', 'Timken', 'INA'].map((brand) => (
                     <button
                       key={brand}
                       onClick={() => setSelectedBrand(brand)}
@@ -872,28 +900,43 @@ ${partnerMessage || 'N/A'}`;
                         <motion.div 
                           initial={{ opacity: 0, y: 10 }}
                           animate={{ opacity: 1, y: 0 }}
-                          className="text-center py-4 bg-green-500/10 border border-green-500/30 rounded-sm"
+                          className="text-center py-4 bg-emerald-500/10 border border-emerald-500/30 rounded-sm"
                         >
-                          <CheckCircle className="text-green-400 mx-auto mb-2" size={32} />
-                          <p className="text-xs text-white font-bold uppercase tracking-wider">Gửi thành công!</p>
-                          <p className="text-[11px] text-gray-400 mt-1">Đội ngũ kỹ sư HGK sẽ Zalo/Hotline hỗ trợ Quý khách trong vòng tối đa 2 giờ.</p>
+                          <CheckCircle className="text-emerald-400 mx-auto mb-2" size={32} />
+                          <p className="text-xs text-white font-bold uppercase tracking-wider">Đã Sao Chép & Chuyển Zalo!</p>
+                          <p className="text-[11px] text-amber-300 mt-1 leading-normal font-medium px-2">Thông tin yêu cầu đã được sao chép tự động. Quý khách vui lòng dán (Ctrl+V) vào khung chat Zalo của kỹ sư Hoàng Gia Khang để nhận báo giá sỉ nhanh nhất.</p>
                         </motion.div>
                       ) : (
                         <form onSubmit={(e) => {
                           e.preventDefault();
                           if (!quickInquiryName || !quickInquiryPhone) return;
 
-                          const subject = `Yêu cầu báo giá Vòng bi - Ổ bi: ${selectedProduct ? selectedProduct.name : 'Vật tư ổ đỡ'}`;
-                          const body = `Họ tên khách hàng: ${quickInquiryName}
-Số điện thoại: ${quickInquiryPhone}
-
-Nội dung yêu cầu chi tiết:
-- Thiết bị quan tâm: ${selectedProduct ? selectedProduct.name : 'Gối đỡ / Vòng bi'}
+                          const body = `Chào Hoàng Gia Khang, tôi cần báo giá vòng bi - ổ bi:
+- Sản phẩm: ${selectedProduct ? selectedProduct.name : 'Gối đỡ / Vòng bi'}
 - Nhóm: ${selectedProduct ? selectedProduct.group : 'Vòng bi'}
-- Ghi chú: ${quickInquiryNotes || 'N/A'}`;
+- Họ tên: ${quickInquiryName}
+- SĐT/Zalo: ${quickInquiryPhone}
+- Yêu cầu khác: ${quickInquiryNotes || 'N/A'}`;
 
-                          window.location.href = `mailto:hoanggiakhangtrading@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+                          try {
+                            if (navigator.clipboard && navigator.clipboard.writeText) {
+                              navigator.clipboard.writeText(body);
+                            } else {
+                              const textArea = document.createElement("textarea");
+                              textArea.value = body;
+                              textArea.style.position = "fixed";
+                              textArea.style.opacity = "0";
+                              document.body.appendChild(textArea);
+                              textArea.select();
+                              document.execCommand('copy');
+                              document.body.removeChild(textArea);
+                            }
+                          } catch (err) {
+                            console.error(err);
+                          }
+
                           setQuickInquirySuccess(true);
+                          window.open("https://zalo.me/0833756356", "_blank");
                         }} className="space-y-3">
                           <div className="grid grid-cols-2 gap-3">
                             <input 
@@ -1231,9 +1274,14 @@ Nội dung yêu cầu chi tiết:
                       </div>
                     ))}
                   </div>
-                  <button className="mt-auto py-5 border border-gold/20 hover:border-gold hover:bg-gold/10 text-white text-[10px] font-bold uppercase tracking-[0.3em] transition-all rounded-sm flex items-center justify-center gap-2 group/btn">
+                  <a 
+                    href="https://zalo.me/0833756356"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mt-auto py-5 border border-gold/20 hover:border-gold hover:bg-gold/10 text-white text-[10px] font-bold uppercase tracking-[0.3em] transition-all rounded-sm flex items-center justify-center gap-2 group/btn"
+                  >
                     Liên hệ tư vấn <ArrowRight size={14} className="group-hover/btn:translate-x-2 transition-transform" />
-                  </button>
+                  </a>
                 </div>
               </motion.div>
             ))}
@@ -1312,17 +1360,17 @@ Nội dung yêu cầu chi tiết:
                 </div>
 
                 {partnerSuccess ? (
-                  <motion.div 
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    className="text-center py-12 bg-green-500/10 border border-green-500/20 rounded-sm p-6"
-                  >
-                    <CheckCircle className="text-green-500 mx-auto mb-4" size={48} />
-                    <h4 className="text-xl font-display font-medium text-navy-dark tracking-wide uppercase">Gửi Yêu Cầu Thành Công!</h4>
-                    <p className="text-gray-500 text-sm mt-2 max-w-md mx-auto">
-                      Hệ thống đã chuẩn bị thư gửi đến <strong>hoanggiakhangtrading@gmail.com</strong>. HGK sẽ liên hệ quý khách qua Hotline/Zalo trong thời gian sớm nhất.
-                    </p>
-                  </motion.div>
+                        <motion.div 
+                          initial={{ opacity: 0, scale: 0.95 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          className="text-center py-12 bg-emerald-500/10 border border-emerald-500/20 rounded-sm p-6"
+                        >
+                          <CheckCircle className="text-emerald-500 mx-auto mb-4" size={48} />
+                          <h4 className="text-xl font-display font-medium text-navy-dark tracking-wide uppercase">Đã Sao Chép & Chuyển Zalo!</h4>
+                          <p className="text-amber-300 text-sm mt-2 max-w-md mx-auto font-medium leading-relaxed">
+                            Thông tin yêu cầu đã được sao chép tự động. Quý khách vui lòng dán (Ctrl+V) vào khung chat Zalo của kỹ sư Hoàng Gia Khang để nhận tư vấn sỉ nhanh chóng nhất.
+                          </p>
+                        </motion.div>
                 ) : (
                   <form className="grid grid-cols-1 md:grid-cols-2 gap-8" onSubmit={handlePartnerFormSubmit}>
                     <div className="flex flex-col gap-3">
@@ -1478,6 +1526,72 @@ Nội dung yêu cầu chi tiết:
                   <div className="absolute -bottom-1 left-0 w-8 h-0.5 bg-gold group-hover:w-full transition-all duration-500" />
                 </div>
               </motion.article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* 10.5. CÁC ĐƠN VỊ ĐÃ CUNG CẤP */}
+      <section className="py-32 bg-linear-to-b from-[#FAF8F4] to-white relative overflow-hidden border-t border-gray-100">
+        <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-gold/10 via-gold/40 to-gold/10" />
+        <div className="container mx-auto px-4 md:px-12 animate-fade-in">
+          <div className="max-w-3xl mx-auto text-center mb-20">
+            <h5 className="text-[#B8860B] font-bold text-[10px] tracking-[0.4em] uppercase mb-4">Hồ sơ năng lực thực tế</h5>
+            <h2 className="text-3xl md:text-4xl font-display font-medium text-navy-dark leading-tight uppercase">ĐƠN VỊ TIÊU BIỂU ĐÃ CUNG CẤP</h2>
+            <div className="h-1 bg-[#B8860B] w-20 mx-auto mt-6" />
+            <p className="text-gray-500 mt-5 font-light text-sm md:text-base leading-relaxed">
+              Hoàng Gia Khang Industry tự hào đồng hành và cung cấp vật tư kỹ thuật, vòng bi phụ tùng truyền động chuyên sâu cho các nhà máy, doanh nghiệp lớn hàng đầu khu vực miền Trung.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
+            {DELIVERED_CUSTOMERS.map((client, idx) => (
+              <motion.div
+                key={client.id}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: idx * 0.1 }}
+                className="bg-white border border-gray-100/80 hover:border-gold/30 hover:shadow-xl rounded-md p-6 sm:p-8 transition-all duration-300 flex flex-col justify-between group relative"
+              >
+                <div className="absolute top-0 left-0 h-[3px] w-0 bg-gold group-hover:w-full transition-all duration-500 rounded-t-sm" />
+                <div>
+                  <div className="flex items-start justify-between gap-4 mb-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 bg-linear-to-br from-[#FAF8F4] to-white border border-gold/10 rounded-sm flex items-center justify-center text-gold group-hover:bg-gold group-hover:text-white transition-all duration-300 shrink-0">
+                        <span className="text-xs font-bold">{idx + 1}</span>
+                      </div>
+                      <h3 className="text-base sm:text-lg font-display font-medium text-navy-dark group-hover:text-gold transition-colors duration-300 leading-snug">
+                        {client.name}
+                      </h3>
+                    </div>
+                    <span className="shrink-0 inline-flex items-center gap-1 px-2 py-0.5 rounded-sm bg-emerald-50 text-emerald-700 text-[9px] font-bold uppercase tracking-wider border border-emerald-100/50">
+                      <CheckCircle size={10} className="text-emerald-600" /> {client.status}
+                    </span>
+                  </div>
+
+                  <div className="flex items-center gap-1.5 text-gray-400 font-medium text-[10px] sm:text-[11px] mb-4">
+                    <MapPin size={12} className="text-gold shrink-0" /> {client.location}
+                  </div>
+
+                  <p className="text-gray-500 text-xs sm:text-sm font-light leading-relaxed mb-6 pl-3 border-l-2 border-gold/15 group-hover:border-gold/50 transition-colors">
+                    <span className="font-semibold text-navy-dark block mb-1 uppercase tracking-wider text-[9px] opacity-60">Hạng mục cung ứng:</span>
+                    {client.items}
+                  </p>
+                </div>
+
+                <div className="pt-4 border-t border-gray-50 flex flex-wrap gap-2 items-center justify-between text-[10px] sm:text-[11px]">
+                  <span className="text-gray-400 font-light font-mono">HGK-PARTNER #0{client.id}</span>
+                  <a 
+                    href="https://zalo.me/0833756356" 
+                    target="_blank" 
+                    rel="noopener noreferrer" 
+                    className="text-navy-dark font-bold hover:text-gold uppercase tracking-wider flex items-center gap-1 transition-colors"
+                  >
+                    Yêu cầu tư vấn tương tự <ArrowRight size={12} />
+                  </a>
+                </div>
+              </motion.div>
             ))}
           </div>
         </div>

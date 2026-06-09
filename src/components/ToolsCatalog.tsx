@@ -213,18 +213,34 @@ export const ToolsCatalogComponent: React.FC = () => {
     if (!inquiryName || !inquiryPhone) return;
 
     const subject = `Yêu cầu báo giá thiết bị: ${activeInquiryProduct ? activeInquiryProduct.name : 'Dụng cụ công nghiệp'}`;
-    const body = `Họ tên khách hàng: ${inquiryName}
-Số điện thoại: ${inquiryPhone}
-Thư điện tử: ${inquiryEmail || 'N/A'}
+    const body = `Chào Hoàng Gia Khang, tôi cần báo giá thiết bị/dụng cụ:
+- Sản phẩm: ${activeInquiryProduct ? activeInquiryProduct.name : 'Dụng cụ công nghiệp'}
+- Nhóm: ${activeInquiryProduct ? activeInquiryProduct.group : 'Dụng cụ'}
+- Họ tên: ${inquiryName}
+- SĐT/Zalo: ${inquiryPhone}
+- Email: ${inquiryEmail || 'N/A'}
+- Yêu cầu khác: ${inquiryMessage || 'N/A'}`;
 
-Nội dung yêu cầu chi tiết:
-- Thiết bị quan tâm: ${activeInquiryProduct ? activeInquiryProduct.name : 'Dụng cụ công nghiệp'}
-- Nhóm thiết bị: ${activeInquiryProduct ? activeInquiryProduct.group : 'Dụng cụ'}
-- Chi tiết khác: ${inquiryMessage || 'N/A'}`;
-
-    window.location.href = `mailto:hoanggiakhangtrading@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(body);
+      } else {
+        const textArea = document.createElement("textarea");
+        textArea.value = body;
+        textArea.style.position = "fixed";
+        textArea.style.opacity = "0";
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+      }
+    } catch (err) {
+      console.error(err);
+    }
 
     setInquirySuccess(true);
+    window.open("https://zalo.me/0833756356", "_blank");
+
     setTimeout(() => {
       setInquirySuccess(false);
       setInquiryName('');
@@ -232,7 +248,7 @@ Nội dung yêu cầu chi tiết:
       setInquiryPhone('');
       setInquiryMessage('');
       setActiveInquiryProduct(null);
-    }, 2500);
+    }, 4000);
   };
 
   return (
@@ -849,10 +865,10 @@ Nội dung yêu cầu chi tiết:
 
                 {inquirySuccess ? (
                   <div className="text-center py-6">
-                    <CheckCircle className="mx-auto text-green-500 mb-4 animate-bounce" size={48} />
-                    <h4 className="text-base font-bold text-white mb-2">Gửi Yêu Cầu Thành Công!</h4>
-                    <p className="text-xs text-[#A0AEC0] max-w-sm mx-auto">
-                      Đội ngũ kỹ thuật & thương mại Hoàng Gia Khang sẽ kiểm tra kho, tính toán đại diện chiết khấu thương mại và liên hệ phản hồi Quý khách sớm nhất trong vòng 2 giờ làm việc.
+                    <CheckCircle className="mx-auto text-emerald-400 mb-4 animate-bounce" size={48} />
+                    <h4 className="text-base font-bold text-white mb-2">Đã Sao Chép & Chuyển Zalo!</h4>
+                    <p className="text-xs text-amber-300 max-w-sm mx-auto font-medium leading-relaxed">
+                      Thông tin yêu cầu đã được sao chép tự động. Quý khách vui lòng dán (Ctrl+V) vào khung chat Zalo kỹ sư Hoàng Gia Khang để nhận báo giá sỉ thiết bị dụng cụ nhanh nhất.
                     </p>
                   </div>
                 ) : (

@@ -263,19 +263,35 @@ export function LubricantsCatalog() {
     }
 
     const subject = `Yêu cầu báo giá Dầu mỡ bôi trơn: ${inquiryProduct ? inquiryProduct.name : 'Dầu mỡ bôi trơn'}`;
-    const body = `Họ tên khách hàng: ${inquiryForm.name}
-Số điện thoại: ${inquiryForm.phone}
-Thư điện tử: ${inquiryForm.email || 'N/A'}
-Công ty: ${inquiryForm.company || 'N/A'}
-Số lượng cần dự tính: ${inquiryForm.quantity}
+    const body = `Chào Hoàng Gia Khang, tôi cần báo giá sản phẩm dủ mỡ bôi trơn:
+- Sản phẩm: ${inquiryProduct ? inquiryProduct.name : 'Dầu mỡ bôi trơn'}
+- Họ tên: ${inquiryForm.name}
+- SĐT/Zalo: ${inquiryForm.phone}
+- Email: ${inquiryForm.email || 'N/A'}
+- Đơn vị: ${inquiryForm.company || 'N/A'}
+- Số lượng: ${inquiryForm.quantity}
+- Yêu cầu khác: ${inquiryForm.message || 'N/A'}`;
 
-Nội dung yêu cầu chi tiết:
-- Sản phẩm quan tâm: ${inquiryProduct ? inquiryProduct.name : 'Dầu mỡ bôi trơn'}
-- Chi tiết khác: ${inquiryForm.message || 'N/A'}`;
-
-    window.location.href = `mailto:hoanggiakhangtrading@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(body);
+      } else {
+        const textArea = document.createElement("textarea");
+        textArea.value = body;
+        textArea.style.position = "fixed";
+        textArea.style.opacity = "0";
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+      }
+    } catch (err) {
+      console.error(err);
+    }
 
     setInquirySuccess(true);
+    window.open("https://zalo.me/0833756356", "_blank");
+
     setTimeout(() => {
       setInquirySuccess(false);
       setInquiryProduct(null);
@@ -1091,8 +1107,8 @@ Nội dung yêu cầu chi tiết:
               {inquirySuccess ? (
                 <div className="text-center py-8">
                   <CheckCircle2 size={40} className="text-emerald-400 mx-auto mb-3 animate-pulse" />
-                  <h4 className="text-base font-bold text-white mb-2">Đăng Ký Thành Công!</h4>
-                  <p className="text-xs text-gray-400 px-4">Yêu cầu báo giá dầu mỡ bôi trơn của Quý khách đã gửi thành công. Đội ngũ chuyên gia kỹ thuật bôi trơn sẽ liên lạc trực tiếp tư vấn trong vòng 15-30 phút.</p>
+                  <h4 className="text-base font-bold text-white mb-2">Đã Sao Chép & Chuyển Zalo!</h4>
+                  <p className="text-xs text-amber-300 px-4 font-medium leading-relaxed">Thông tin yêu cầu đã được sao chép tự động. Quý khách vui lòng dán (Ctrl+V) vào khung chat Zalo của kỹ sư Hoàng Gia Khang để nhận báo giá sỉ dầu mỡ bôi trơn nhanh nhất.</p>
                 </div>
               ) : (
                 <form onSubmit={handleInquirySubmit} className="space-y-4 text-xs">

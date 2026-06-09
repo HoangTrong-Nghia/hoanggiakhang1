@@ -30,7 +30,7 @@ function getGeminiClient(): GoogleGenAI {
 const SYSTEM_INSTRUCTION = ` Bạn là trợ lý ảo AI bán hàng thông minh và cực kỳ chuyên nghiệp của CÔNG TY TNHH SẢN XUẤT THƯƠNG MẠI HOÀNG GIA KHANG (Hoàng Gia Khang Industry).
 Slogan của công ty: "Uy tín – Chất lượng – Đồng hành phát triển".
 Hotline: 0833 756 356
-Zalo của tôi: 0966 180 802
+Zalo của tôi: 0833 756 356
 Địa chỉ: 03/10 Nguyễn Bỉnh Khiêm, Phường Phú Xuân, TP. Huế
 Đại diện pháp luật: Hồ Hải Khánh – Tổng Giám Đốc
 Email: hoanggiakhangtrading@gmail.com
@@ -63,12 +63,83 @@ Nhiệm vụ của bạn là tư vấn các dòng sản phẩm và dịch vụ t
 --- THÀNH TỰU VÀ CÁC THẾ MẠNH DỊCH VỤ ---
 - Thiết kế & chế tạo cơ khí máy móc theo đơn đặt hàng đầu: thiết kế 3D hệ thống băng tải mâm xích, đồ gá Jig gia công tự động hóa, gàu nâng hạ.
 - Cam kết dịch vụ: Báo giá cực kỳ nhanh chóng trong vòng 2 giờ làm việc. Giao hàng tốc hành toàn quốc. Kỹ sư dày dặn trực tiếp khảo sát miễn phí tận xưởng xí nghiệp.
+- Các đơn vị tiêu biểu đã cung cấp (Đối tác danh dự của chúng tôi):
+  1. Công ty Cao su Huy Anh Phong Điền (tại Khu công nghiệp Phong Điền, Huế): Cung cấp gối gá đỡ gánh tải lực, vòng bi chính hãng ZWZ/NTN chịu tải gánh nặng và xích tải hệ thống chế biến cao su tự nhiên.
+  2. Công ty Cổ phần Xi măng Luks (Việt Nam) (tại Hương Trà, Huế): Cung ứng các dải vòng bi công nghiệp cỡ lớn trục cán nghiền clinker và mỡ bôi trơn chuyên dụng.
+  3. Nhà máy Bia Carlsberg Việt Nam (Phú Bài, Huế): Gia công đóng pallet gỗ keo sấy nhiệt đạt tiêu chuẩn ISPM 15 và cung cấp pallet nhựa lót sàn dẻo chịu lực.
+  4. Dự án Hệ thống Băng tải Scavi (Phong Điền, Huế): Thiết kế chi tiết chế tạo cơ khí rulo con lăn, lắp ráp vận hành bảo trì trọn gói.
 
 --- QUY TẮC PHẢN HỒI ---
 - Giao tiếp văn minh, chân thành, khiêm tốn dã chiến. Luôn nói tiếng Việt chuẩn, chuyên nghiệp. Không nói dối mập mờ hoặc bịa đặt thông số kỹ thuật nằm ngoài thông tin được cung cấp.
 - Giữ câu trả lời ngắn gọn, rõ ràng theo định dạng Markdown với bullet points, phân đoạn dễ đọc.
-- Bất cứ khi nào khách hàng muốn tìm báo giá, mua sản phẩm cụ thể, đặt dịch vụ hoặc hỏi thông số kỹ thuật chi tiết nhất, hãy nhiệt tình hướng dẫn họ liên hệ để được kỹ sư Hoàng Gia Khang hỗ trợ nhanh nhất qua điện thoại Hotline: 0833 756 356 hoặc CHAT ZALO trực tiếp qua link: https://zalo.me/0966180802.
-- Nhắc khéo khách hàng có thể bấm trực tiếp vào số Zalo 0966 180 802 trong widget phòng chat để trò chuyện dã chiến.`;
+- Bất cứ khi nào khách hàng muốn tìm báo giá, mua sản phẩm cụ thể, đặt dịch vụ hoặc hỏi thông số kỹ thuật chi tiết nhất, hãy nhiệt tình hướng dẫn họ liên hệ để được kỹ sư Hoàng Gia Khang hỗ trợ nhanh nhất qua điện thoại Hotline: 0833 756 356 hoặc CHAT ZALO trực tiếp qua link: https://zalo.me/0833756356.
+- Nhắc khéo khách hàng có thể bấm trực tiếp vào số Zalo 0833 756 356 trong widget phòng chat để trò chuyện dã chiến.`;
+
+// Helper to query the Cloudflare Worker proxy with multiple fallback paths
+async function queryGeminiWorker(finalContents: any[]): Promise<string> {
+  const payload = {
+    contents: finalContents,
+    systemInstruction: {
+      parts: [{ text: SYSTEM_INSTRUCTION }]
+    },
+    generationConfig: {
+      temperature: 0.7
+    }
+  };
+
+  const urlsToTry = [
+    "https://gemini-proxy.hoanggiakhangtrading.workers.dev/v1beta/models/gemini-2.0-flash:generateContent",
+    "https://gemini-proxy.hoanggiakhangtrading.workers.dev/v1beta/models/gemini-1.5-flash:generateContent",
+    "https://gemini-proxy.hoanggiakhangtrading.workers.dev/"
+  ];
+
+  let lastError: any = null;
+
+  for (const url of urlsToTry) {
+    try {
+      console.log(`🔄 Đang gửi yêu cầu đến Gemini Proxy tại: ${url}`);
+      const res = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "User-Agent": "aistudio-build"
+        },
+        body: JSON.stringify(payload)
+      });
+
+      if (!res.ok) {
+        throw new Error(`Proxy trả về mã lỗi ${res.status}: ${await res.text()}`);
+      }
+
+      const responseText = await res.text();
+      try {
+        const data = JSON.parse(responseText);
+        
+        // 1. Standard Gemini API format
+        if (data.candidates?.[0]?.content?.parts?.[0]?.text) {
+          return data.candidates[0].content.parts[0].text;
+        }
+        
+        // 2. Custom worker JSON formats
+        if (data.reply) return data.reply;
+        if (data.text) return data.text;
+        
+        // Literal string returned
+        if (typeof data === "string") return data;
+      } catch (e) {
+        // If not a JSON, check if raw plain text body is returned
+        if (responseText && responseText.trim().length > 0) {
+          return responseText;
+        }
+      }
+    } catch (err: any) {
+      console.warn(`⚠️ Thất bại khi gọi proxy qua ${url}:`, err.message);
+      lastError = err;
+    }
+  }
+
+  throw lastError || new Error("Mọi nỗ lực kết nối qua Worker proxy đều thất bại.");
+}
 
 async function startServer() {
   const app = express();
@@ -83,8 +154,6 @@ async function startServer() {
       if (!messages || !Array.isArray(messages)) {
         return res.status(400).json({ error: "Tham số 'messages' không hợp lệ." });
       }
-
-      const client = getGeminiClient();
 
       // Transform frontend history into the modern SDK parameter format
       const formattedContents = messages.map((msg: any) => {
@@ -115,21 +184,42 @@ async function startServer() {
         }
       }
 
-      const response = await client.models.generateContent({
-        model: "gemini-3.5-flash",
-        contents: finalContents,
-        config: {
-          systemInstruction: SYSTEM_INSTRUCTION,
-          temperature: 0.7,
-        },
-      });
+      let text = "";
+      try {
+        // Step 1: Attempt to use the user requested Cloudflare Worker Proxy
+        text = await queryGeminiWorker(finalContents);
+        console.log("✅ Gọi thành công qua Worker proxy!");
+      } catch (proxyError: any) {
+        console.warn("⚠️ Không gọi được qua Worker proxy. Thử chuyển sang SDK gốc:", proxyError.message);
+        
+        // Step 2: Fallback to the standard official Gemini Client if API keys exist
+        try {
+          const client = getGeminiClient();
+          const response = await client.models.generateContent({
+            model: "gemini-3.5-flash",
+            contents: finalContents,
+            config: {
+              systemInstruction: SYSTEM_INSTRUCTION,
+              temperature: 0.7,
+            },
+          });
+          text = response.text || "";
+        } catch (sdkError: any) {
+          // Both approaches failed
+          throw new Error(
+            `Không thể lấy dữ liệu từ AI. (Worker Proxy: ${proxyError.message} | SDK gốc: ${sdkError.message})`
+          );
+        }
+      }
 
-      const text = response.text || "Xin lỗi, tôi gặp chút trục trặc khi tạo ý kiến trợ giúp. Vui lòng thử lại sau.";
+      if (!text) {
+        text = "Xin lỗi, tôi gặp chút trục trặc khi tạo ý kiến trợ giúp. Vui lòng thử lại sau.";
+      }
       return res.json({ reply: text });
     } catch (error: any) {
       console.error("Lỗi khi xử lý chat qua Gemini API:", error);
       return res.status(500).json({
-        error: "Không thể kết nối đến AI dịch vụ. Vui lòng cấu nhập đầy đủ API Key hoặc kiểm tra đường truyền.",
+        error: "Không thể kết nối đến AI dịch vụ. Vui lòng kiểm tra lại thiết lập hoặc đường truyền.",
         details: error.message,
       });
     }

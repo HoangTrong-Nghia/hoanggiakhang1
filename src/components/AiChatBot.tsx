@@ -109,7 +109,7 @@ export const AiChatBot = () => {
         ...prev,
         {
           role: "assistant",
-          content: `⚠️ **Không thể kết nối đến máy chủ AI:** \n\n*Chi tiết lỗi:* \`\`\`${errorMsg}\`\`\` \n\nĐể được hỗ trợ nhanh nhất và nhận báo giá trực tiếp từ kỹ sư Hoàng Gia Khang, quý khách vui lòng liên hệ:\n\n*   **Hotline hỗ trợ:** 0833 756 356\n*   **Zalo Chat:** [0966 180 802](https://zalo.me/0966180802)\n\nChúng tôi sẵn sàng phục vụ và giải đáp mọi băn khoăn của quý khách!`,
+          content: `⚠️ **Không thể kết nối đến máy chủ AI:** \n\n*Chi tiết lỗi:* \`\`\`${errorMsg}\`\`\` \n\nĐể được hỗ trợ nhanh nhất và nhận báo giá trực tiếp từ kỹ sư Hoàng Gia Khang, quý khách vui lòng liên hệ:\n\n*   **Hotline hỗ trợ:** 0833 756 356\n*   **Zalo Chat:** [0833 756 356](https://zalo.me/0833756356)\n\nChúng tôi sẵn sàng phục vụ và giải đáp mọi băn khoăn của quý khách!`,
           time: new Date().toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" })
         }
       ]);
@@ -338,12 +338,12 @@ export const AiChatBot = () => {
                   <span>Kết nối Hotline & Zalo nhận tư vấn chi tiết:</span>
                   <div className="flex items-center gap-2">
                     <a 
-                      href="https://zalo.me/0966180802" 
+                      href="https://zalo.me/0833756356" 
                       target="_blank" 
                       rel="noreferrer" 
                       className="inline-flex items-center gap-1 bg-blue-600 hover:bg-blue-700 text-white font-bold px-2.5 py-1 rounded-sm text-[11px] transition-all"
                     >
-                      <MessageSquare size={12} /> Zalo 0966
+                      <MessageSquare size={12} /> Zalo 0833
                     </a>
                     <a 
                       href="tel:0833756356" 
